@@ -1,5 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App.tsx'
+import App from './App.tsx';
+import { ReducerContextProvider } from "./service/store";
 
-ReactDOM.render(<App />, document.getElementById('root'))
+function Index(){
+    return <ReducerContextProvider><App/></ReducerContextProvider>
+}
+ReactDOM.render(<Index />, document.getElementById('root'))

@@ -1,9 +1,16 @@
-import { getSampleList } from "@/service";
+import { api } from "@/service/request";
 import React, { useCallback, useMemo, useState } from "react";
 import "./index.scss";
+import _ from "lodash";
 
 const SampleList: React.FC = () => {
   const sampleSize = 1900;
+
+  const getInstance = useCallback((index) => {
+    console.log(index);
+
+    api("getInstance", index);
+  }, []);
 
   const getItem = () => {
     let i = 0;
@@ -11,19 +18,19 @@ const SampleList: React.FC = () => {
     console.log(_list);
 
     while (i < sampleSize) {
-      _list.push(<div>{i}</div>);
+      let j = i;
+      _list.push(
+        <div className="sampleList-item" onClick={() => getInstance(j)}>
+          {i}
+        </div>
+      );
       i++;
     }
     return _list;
   };
 
   return (
-    <div
-      className="sampleList"
-      style={{ overflow: "scroll", height: 800, scrollbarWidth: "none" }}
-    >
-      {getItem().map((item, index) => item)}
-    </div>
+    <div className="sampleList">{getItem().map((item, index) => item)}</div>
   );
 };
 export default SampleList;

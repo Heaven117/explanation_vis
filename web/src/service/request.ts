@@ -23,7 +23,7 @@ export const api = (url, params = {}, method = "GET") => {
         });
     }
     case "POST": {
-      return instance.post(url, { params: params });
+      return instance.post(url, JSON.stringify(params) );
     }
   }
 };

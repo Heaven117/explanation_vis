@@ -1,15 +1,17 @@
 import React, { createContext, Dispatch, useReducer, useContext } from "react";
 
 interface IState {
-  count: number;
-  currentId: number;    // 当前选中test data
-  allData: any;
+  totalSample?: number;
+  currentId?: number; // 当前选中test data
+  rawData?: any;
+  compareItem?: any;
 }
 
-const store: IState = {
-  count: 0,
+const store: any = {
+  totalSample: 0,
   currentId: 0,
-  allData: {},
+  rawData: undefined,
+  compareItem: undefined,
 };
 
 const reducer = (
@@ -20,19 +22,30 @@ const reducer = (
   }
 ) => {
   const { type, payload } = action;
+  console.log("dispatch==>", type, payload);
+
   switch (type) {
     default:
       return preState;
+    case "setTotalSample":
+      return {
+        ...preState,
+        totalSample: payload,
+      };
+    case "setRawData":
+      return {
+        ...preState,
+        rawData: payload,
+      };
     case "setCurrentId":
       return {
         ...preState,
         currentId: payload,
       };
-    case "setAllData":
+    case "setCompareItem":
       return {
         ...preState,
-        allData: payload,
-        // ...payload,
+        compareItem: payload,
       };
   }
 };

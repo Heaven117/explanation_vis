@@ -1,39 +1,29 @@
 import React, { useEffect, useState } from "react";
 import MenuBar from "./mods/MenuBar";
 import "./index.scss";
-import { api } from "./service/request";
 import { useReducerContext } from "./service/store";
-import InstancePart from "./mods/Instance";
-import InfluencePart from "./mods/Influence";
-import { Button } from "antd";
+import { api } from "./service/request";
+import _ from "lodash";
+import { MENU } from "./constants";
+import LocalPage from "./mods/LocalPage";
+import EditPage from "./mods/EditPage";
 
 function App() {
-  const {
-    state: { allData },
-    dispatch,
-  } = useReducerContext();
-  const [openInfluencePart, setOpenInfluencePart] = useState(false);
-
-  const showDrawer = () => {
-    setOpenInfluencePart(true);
-  };
+  const { dispatch } = useReducerContext();
+  const [menu, setMenu] = useState("edit");
 
   useEffect(() => {
-    api("/getAllData").then((res: any) => {
-      console.log(res);
-      dispatch({ type: "setAllData", payload: res?.data });
+    api("getDataLength").then((res) => {
+      dispatch({ type: "setTotalSample", payload: res });
     });
-  }, [dispatch]);
+  }, []);
 
   return (
     <div className="App">
-      <MenuBar />
+      <MenuBar menu={menu} setMenu={setMenu} />
       <div className="main-content">
-        <InstancePart />
-        <Button type="primary" onClick={showDrawer}>
-          Open
-        </Button>
-        <InfluencePart open={openInfluencePart} setOpen={setOpenInfluencePart} />
+        {menu === MENU.local && <LocalPage />}
+        {menu === MENU.edit && <EditPage />}
       </div>
     </div>
   );

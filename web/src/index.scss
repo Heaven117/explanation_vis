@@ -3,14 +3,40 @@
   height: 100vh;
   width: 100vw;
 
+  .menuBar {
+    max-width: 256px;
+    .sampleList {
+      display: flex;
+      flex-direction: column;
+      overflow: scroll;
+      height: 800px;
+      row-gap: 4px;
+
+      &::-webkit-scrollbar {
+        width: 0 !important;
+      }
+
+      .icon {
+        width: 20px;
+        height: 20px;
+        margin-left: 24px;
+        font-size: 20px;
+        font-weight: 500;
+      }
+    }
+  }
+
   .main-content {
+    padding: 24px;
     display: flex;
     justify-content: space-between;
     flex: 1;
 
-    #InstancePart {
+    .InstancePart {
+      flex: 1;
       width: 800px;
       height: 500px;
+      z-index: 1;
     }
 
     .InfluencePart {
@@ -18,5 +44,38 @@
       height: 100%;
       width: 400px;
     }
+  }
+
+  .editPage {
+    .row {
+      display: flex;
+      column-gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+
+      .title {
+        width: 200px;
+        font-size: 12px;
+      }
+      .slider {
+        width: 500px;
+      }
+    }
+  }
+}
+
+.h_container {
+  .heatCircle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    color: white;
+    background-color: black;
+    cursor: pointer;
   }
 }

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { api } from "@/service/request";
 import { useReducerContext } from "@/service/store";
-import InfluHeatmap from "@/components/influ-heatmap";
+import InfluHeatmap from "@/components/InfluHeatmap";
 import { Drawer, Tabs, TabsProps } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 
-const InfluencePart = ({ open, setOpen }) => {
+const InfluenceDrawer = ({ open, setOpen }) => {
   const {
     state: { currentId },
   } = useReducerContext();
@@ -29,18 +29,18 @@ const InfluencePart = ({ open, setOpen }) => {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: `Harmful`,
-      children:
-        data?.harmful.length > 0 ? (
-          <InfluHeatmap h_data={data.harmful} colorBrew={colorBrewHarm} />
-        ) : null,
-    },
-    {
-      key: "2",
       label: `Helpful`,
       children:
         data?.helpful.length > 0 ? (
           <InfluHeatmap h_data={data.helpful} colorBrew={colorBrewHelp} />
+        ) : null,
+    },
+    {
+      key: "2",
+      label: `Harmful`,
+      children:
+        data?.harmful.length > 0 ? (
+          <InfluHeatmap h_data={data.harmful} colorBrew={colorBrewHarm} />
         ) : null,
     },
   ];
@@ -48,20 +48,21 @@ const InfluencePart = ({ open, setOpen }) => {
   return (
     <Drawer
       className="InfluencePart"
-      title={
-        <Tabs
-          tabBarExtraContent={<CloseOutlined onClick={() => setOpen(false)} />}
-          defaultActiveKey="1"
-          items={items}
-        />
-      }
+      title="影响示例"
       placement="right"
       onClose={() => setOpen(false)}
       open={open}
-      closable={false}
+      // closable={false}
       maskStyle={{ background: "transparent" }}
-    ></Drawer>
+      bodyStyle={{ paddingTop: 0 }}
+    >
+      <Tabs
+        // tabBarExtraContent={<CloseOutlined onClick={() => setOpen(false)} />}
+        defaultActiveKey="1"
+        items={items}
+      />
+    </Drawer>
   );
 };
 
-export default InfluencePart;
+export default InfluenceDrawer;

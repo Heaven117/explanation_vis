@@ -4,6 +4,19 @@
   width: 100vw;
 
   .main-content {
+    display: flex;
+    justify-content: space-between;
     flex: 1;
+
+    #InstancePart {
+      width: 800px;
+      height: 500px;
+    }
+
+    .InfluencePart {
+      overflow: scroll;
+      height: 100%;
+      width: 400px;
+    }
   }
 }

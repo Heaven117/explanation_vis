@@ -2,15 +2,18 @@ import { api } from "@/service/request";
 import React, { useCallback, useMemo, useState } from "react";
 import "./index.scss";
 import _ from "lodash";
+import { useReducerContext } from "@/service/store";
 
 const SampleList: React.FC = () => {
   const sampleSize = 1900;
+  const { dispatch } = useReducerContext();
 
-  const getInstance = useCallback((index) => {
-    console.log(index);
-
-    api("getInstance", index);
-  }, []);
+  const getInstance = useCallback(
+    (index) => {
+      dispatch({ type: "setCurrentId", payload: index });
+    },
+    [dispatch]
+  );
 
   const getItem = () => {
     let i = 0;

@@ -2,11 +2,13 @@ import React, { createContext, Dispatch, useReducer, useContext } from "react";
 
 interface IState {
   count: number;
+  currentId: number;    // 当前选中test data
   allData: any;
 }
 
 const store: IState = {
   count: 0,
+  currentId: 0,
   allData: {},
 };
 
@@ -21,6 +23,11 @@ const reducer = (
   switch (type) {
     default:
       return preState;
+    case "setCurrentId":
+      return {
+        ...preState,
+        currentId: payload,
+      };
     case "setAllData":
       return {
         ...preState,

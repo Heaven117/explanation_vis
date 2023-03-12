@@ -7,10 +7,12 @@ import {
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import SampleList from "@/components/sample-list";
+import { useReducerContext } from "@/service/store";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 const MenuBar: React.FC = () => {
+ 
   const [collapsed, setCollapsed] = useState(false);
   const [sampleVisible, setSampleVisible] = useState(false);
 

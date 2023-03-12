@@ -12,14 +12,18 @@ export const api = (url, params = {}, method = "GET") => {
   }
   switch (method) {
     case "GET": {
-      return instance.get(url, { params: params }).then(function (res) {
-        console.log(res);
-      });
+      return instance
+        .get(url, { params: params })
+        .then((res) => {
+          console.log(url, res.data);
+          return res.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
     case "POST": {
-      return instance.post(url, { params: params }).then(function (res) {
-        console.log(res);
-      });
+      return instance.post(url, { params: params });
     }
   }
 };

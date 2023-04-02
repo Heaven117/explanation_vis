@@ -1,48 +1,53 @@
 .App {
   display: flex;
   height: 100vh;
-  width: 100vw;
 
   .menuBar {
     max-width: 256px;
+
+    .ant-list-item {
+      border: none;
+      justify-content: center;
+      padding: 6px 0;
+    }
+
     .sampleList {
+      border-inline-end: 1px solid rgba(5, 5, 5, 0.06);
+    }
+
+    .sampleBtn {
       display: flex;
-      flex-direction: column;
-      overflow: scroll;
-      height: 800px;
-      row-gap: 4px;
-
-      &::-webkit-scrollbar {
-        width: 0 !important;
-      }
-
-      .icon {
-        width: 20px;
-        height: 20px;
-        margin-left: 24px;
-        font-size: 20px;
-        font-weight: 500;
-      }
+      width: 100%;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 50px;
     }
   }
 
   .main-content {
     padding: 24px;
-    display: flex;
-    justify-content: space-between;
-    flex: 1;
-
-    .InstancePart {
-      flex: 1;
-      width: 800px;
-      height: 500px;
-      z-index: 1;
-    }
 
     .InfluencePart {
       overflow: scroll;
       height: 100%;
       width: 400px;
+    }
+  }
+
+  .localPage {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+
+    .main {
+      padding: 0 50px;
+      .top {
+        display: flex;
+        align-items: center;
+        .showDrawerBtn {
+          margin-left: auto;
+        }
+      }
     }
   }
 

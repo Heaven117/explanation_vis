@@ -1,4 +1,4 @@
-
+'use strict';
 
 const path = require('path');
 const fs = require('fs');
@@ -24,14 +24,14 @@ const publicUrlOrPath = getPublicUrlOrPath(
 const buildPath = process.env.BUILD_PATH || 'build';
 
 const moduleFileExtensions = [
-  'ts',
-  'tsx',
   'web.mjs',
   'mjs',
   'web.js',
   'js',
   'web.ts',
+  'ts',
   'web.tsx',
+  'tsx',
   'json',
   'web.jsx',
   'jsx',

@@ -6,27 +6,21 @@ import torch
 from waitress import serve
 import numpy as np
 import pandas as pd
+import copy
 
 from utils.helper import *
-from util import toJson,get_default_config
 from models.mlp import load_model
-from models.anchor import find_anchor
 import warnings
 warnings.filterwarnings("ignore")  # 忽略UserWarning兼容性警告
 
 np.random.seed(12345)
-model_config = get_default_config()[0]
-save_path = model_config['save_path']
-device = model_config['device']
 
 # ------- Initialize file ------- #
 BASEDIR = './server/data/adult/'
-# 原始数据
 data_file = BASEDIR+'final_data.csv'
 pre_file = BASEDIR+'pred_data_all.csv'
 raw_data = json.loads(pd.read_csv(data_file, header=0).to_json(orient='records'))
 pre_data = json.loads(pd.read_csv(pre_file, header=0).to_json(orient='records'))
-# pre_data = pd.read_csv(pre_file, header=0).values
 
 # 影响函数
 with open(BASEDIR + 'influence.json','r',encoding = 'utf-8') as fp:
@@ -34,11 +28,50 @@ with open(BASEDIR + 'influence.json','r',encoding = 'utf-8') as fp:
     print('=====influence file read done')
 fp.close()
 
+with open(BASEDIR + 'anchors.json','r',encoding = 'utf-8') as fp:
+    anchorData = json.load(fp)
+    print('=====anchor file read done')
+fp.close()
+
+
+# ------- Initialize Model ------- #
 # 加载训练好的模型
 # model = load_model(BASEDIR+'svm_FICO_500.pth')
 # train_loader,test_loader,train_set,test_set= loader_data()
 model = load_model()
 
+
+
+# ------ Help Function ------- #
+def getSingleSample(idx):
+    sample = copy.deepcopy(raw_data[idx])
+    sample['prediction'] = adult_target_value[pre_data[idx]['prediction']]
+    sample['category'] = pre_data[idx]['category']
+    sample['percentage'] = pre_data[idx]['percentage']
+    return sample
+
+def getAnchorData(anchorData):
+    ans = {}
+    ans['feature'] = anchorData['feature']
+    ans['precision'] = anchorData['precision']
+    examples = anchorData['examples']
+
+    newEx =[]
+    for ex in examples:
+        cts = []
+        cfs = []
+        covered_true = ex['covered_true']
+        covered_false = ex['covered_false']
+        for ct in covered_true:
+            tmp = getSingleSample(ct)
+            cts.append(tmp)
+        for cf in covered_false:
+            tmp = getSingleSample(cf)
+            cfs.append(tmp)
+        newEx.append({'covered_true':cts,'covered_false':cfs})
+    ans['examples'] = newEx
+    return ans
+    
 
 
 # ------ Initialize WebApp ------- #
@@ -75,15 +108,17 @@ def getInstance():
         return f"Please enter a sample number in the range (1, ${raw_data_len})."
     else:			
         #! anchor 算法
-        # anchors = anchors_tabular(model,idx,train_set,test_set)
-        anchors = find_anchor(idx,model)
+        # anchors = find_anchor(idx,model)
+        if idx > len(anchorData): anchors = []
+        else: anchors = getAnchorData( anchorData[str(idx)])
+        # anchors = anchorData[str(idx)]
+        sample = getSingleSample(idx)
 
         response = {}
         response['id'] = idx
         response['total'] = len(raw_data)
-        response['sample'] = raw_data[idx]
+        response['sample'] = sample
         response['anchor'] = anchors
-        response['predict'] = pre_data[idx]
         return toJson(response)
 
 # 获取相似数据-影响训练点
@@ -118,21 +153,21 @@ def getSimilarData():
 def getDataLength():
     return toJson(len(raw_data))
 
-@app.route('/runModel',methods=['GET', 'POST'])
-def runModel():
-    if request.method == 'POST':
-        print(request.json)
-        test_set = request.json
-        # model = load_model(save_path)
-        x_test = torch.Tensor(test_set).to(device)
-        y = model.pred(x_test).item()
-        y_prob = model(x_test).item()
-        print("Test result:\t{:.2%}\t{:.2%}".format(y,y_prob))
+# @app.route('/runModel',methods=['GET', 'POST'])
+# def runModel():
+#     if request.method == 'POST':
+#         print(request.json)
+#         test_set = request.json
+#         # model = load_model(save_path)
+#         x_test = torch.Tensor(test_set).to(device)
+#         y = model.pred(x_test).item()
+#         y_prob = model(x_test).item()
+#         print("Test result:\t{:.2%}\t{:.2%}".format(y,y_prob))
 
-        response = {}
-        response['predict'] = y
-        response['possible'] = y_prob
-        return toJson(response)
+#         response = {}
+#         response['predict'] = y
+#         response['possible'] = y_prob
+#         return toJson(response)
 
 
 # ------- Run WebApp ------- #

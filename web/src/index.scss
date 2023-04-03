@@ -1,6 +1,7 @@
 .App {
   display: flex;
   height: 100vh;
+  position: absolute;
 
   .menuBar {
     max-width: 256px;
@@ -25,8 +26,9 @@
   }
 
   .main-content {
+    flex: 1;
     padding: 24px;
-
+    display: flex;
     .InfluencePart {
       overflow: scroll;
       height: 100%;
@@ -35,18 +37,39 @@
   }
 
   .localPage {
-    display: flex;
-    justify-content: space-between;
-    flex: 1;
+    position: relative;
+    width: 100%;
+    padding: 0 50px;
 
-    .main {
-      padding: 0 50px;
-      .top {
-        display: flex;
-        align-items: center;
-        .showDrawerBtn {
-          margin-left: auto;
+    .top {
+      display: flex;
+      align-items: center;
+      .showDrawerBtn {
+        margin-left: auto;
+      }
+    }
+    .action {
+      margin: 24px 0;
+      .buttonGroup {
+        margin: 0 20px;
+        .btn {
+          border-radius: 0;
         }
+        :first-child {
+          border-start-start-radius: 6px;
+          border-end-start-radius: 6px;
+        }
+        :last-child {
+          border-start-end-radius: 6px;
+          border-end-end-radius: 6px;
+        }
+      }
+    }
+
+    .sampleTable {
+      height: 1000px;
+      .hightLightCol {
+        background-color: #e6f4ff;
       }
     }
   }
@@ -69,18 +92,17 @@
   }
 }
 
-.h_container {
-  .heatCircle {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
-    color: white;
-    background-color: black;
-    cursor: pointer;
-  }
+.drawerItem {
+  margin: 10px 0;
+  width: 80%;
+  height: 30px;
+  border-radius: 30px;
+  display: flex;
+  text-align: center;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 12px;
+  color: white;
+  background-color: black;
+  cursor: pointer;
 }

@@ -33,33 +33,25 @@ const InfluHeatmap = ({ h_data, colorBrew }) => {
   const onClick = (item) => {
     dispatch({ type: "setCompareItem", payload: item });
   };
-  const Item = useCallback((item) => {
-    const bgColor = gerColorOfWeight(item.value);
-
-    return (
-      <Tooltip
-        title={item.value}
-        color={bgColor}
-        placement="left"
-        key={item.id}
-      >
-        <div
-          className="heatCircle"
-          style={{
-            backgroundColor: bgColor,
-          }}
-          onClick={() => onClick(item)}
-        >
-          {item.id}
-        </div>
-      </Tooltip>
-    );
-  }, []);
 
   return (
-    <div id="container" className="h_container">
-      {h_data.slice(0, 100).map((item) => Item(item))}
-    </div>
+    <>
+      {h_data.map((item) => {
+        return (
+          <div
+            className="drawerItem"
+            key={item.id}
+            style={{
+              backgroundColor: gerColorOfWeight(item.value),
+            }}
+            onClick={() => onClick(item)}
+          >
+            <span>ID:&nbsp;{item.id}</span>
+            <span>influence:&nbsp;{Number(item.value).toFixed(6)}</span>
+          </div>
+        );
+      })}
+    </>
   );
 };
 

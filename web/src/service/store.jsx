@@ -1,23 +1,22 @@
-import React, { createContext, Dispatch, useReducer, useContext } from "react";
+import React, { createContext, useReducer, useContext } from "react";
 
 const store = {
   totalSample: 0,
-  currentId: undefined,
   rawData: undefined,
+  currentId: undefined,
+  curSample: undefined,
+  curAnchor: undefined,
   compareItem: undefined,
-}  
+};
 
-const reducer = (
-  preState,
-  action
-) => {
+const reducer = (preState, action) => {
   const { type, payload } = action;
   console.log("dispatch==>", type, payload);
 
   switch (type) {
     default:
       return preState;
-    case "setTotalSample":
+    case "settotalSample":
       return {
         ...preState,
         totalSample: payload,
@@ -26,6 +25,12 @@ const reducer = (
       return {
         ...preState,
         rawData: payload,
+      };
+    case "setCurSample":
+      return {
+        ...preState,
+        curSample: payload.sample,
+        curAnchor: payload.anchor,
       };
     case "setCurrentId":
       return {
@@ -39,14 +44,6 @@ const reducer = (
       };
   }
 };
-
-// interface IContext {
-//   state: IState;
-//   dispatch: Dispatch<{
-//     type: string;
-//     payload?: any;
-//   }>;
-// }
 
 const Context = createContext({
   state: store,

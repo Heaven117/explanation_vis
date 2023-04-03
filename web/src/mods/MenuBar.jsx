@@ -7,17 +7,16 @@ import {
   CheckCircleFilled,
   CloseCircleFilled,
 } from "@ant-design/icons";
-import { Button, MenuProps, Menu, Input } from "antd";
+import { Button, Menu, Input } from "antd";
 import { useReducerContext } from "@/service/store";
 import { MENU } from "@/constants";
 import { api } from "@/service/request";
 import { List } from "antd";
 import VirtualList from "rc-virtual-list";
 import { isEmpty } from "lodash";
-import { categoryTag } from "@/components/categoryTag";
+import { categoryTag } from "@/components/tags";
 const { Search } = Input;
 
-// type MenuItem = Required<MenuProps>["items"][number];
 const ContainerHeight = 800;
 
 const MenuBar = ({ menu, setMenu }) => {
@@ -60,7 +59,6 @@ const MenuBar = ({ menu, setMenu }) => {
     (index) => {
       setMenu(MENU.local);
       dispatch({ type: "setCurrentId", payload: index });
-      dispatch({ type: "setCompareItem", payload: undefined });
     },
     [dispatch]
   );

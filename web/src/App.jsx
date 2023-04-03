@@ -14,7 +14,7 @@ function App() {
 
   useEffect(() => {
     api("getDataLength").then((res) => {
-      dispatch({ type: "setTotalSample", payload: res });
+      dispatch({ type: "settotalSample", payload: res });
     });
   }, []);
 

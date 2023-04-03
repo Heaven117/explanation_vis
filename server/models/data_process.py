@@ -1,7 +1,7 @@
 import sys
-sys.path.append('./')
-
 import os
+sys.path.append(os.curdir)
+
 import numpy as np
 import pandas as pd 
 from utils.parser import *

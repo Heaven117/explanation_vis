@@ -19,7 +19,7 @@ const InfluenceDrawer = ({ open, setOpen }) => {
 
   const colorBrewHarm = {
     colorStart: { red: 179, green: 0, blue: 0 },
-    colorend: { red: 254, green: 240, blue: 217 },
+    colorend: { red: 253, green: 212, blue: 158 },
   };
   const colorBrewHelp = {
     colorStart: { red: 186, green: 228, blue: 179 },
@@ -32,7 +32,10 @@ const InfluenceDrawer = ({ open, setOpen }) => {
       label: `Helpful`,
       children:
         data?.helpful.length > 0 ? (
-          <InfluHeatmap h_data={data.helpful} colorBrew={colorBrewHelp} />
+          <InfluHeatmap
+            h_data={data.helpful.slice(0, 100)}
+            colorBrew={colorBrewHelp}
+          />
         ) : null,
     },
     {
@@ -40,27 +43,25 @@ const InfluenceDrawer = ({ open, setOpen }) => {
       label: `Harmful`,
       children:
         data?.harmful.length > 0 ? (
-          <InfluHeatmap h_data={data.harmful} colorBrew={colorBrewHarm} />
+          <InfluHeatmap
+            h_data={data.harmful.slice(0, 100)}
+            colorBrew={colorBrewHarm}
+          />
         ) : null,
     },
   ];
 
   return (
     <Drawer
+      placement="bottom"
       className="InfluencePart"
       title="影响示例"
-      placement="right"
       onClose={() => setOpen(false)}
       open={open}
-      // closable={false}
       maskStyle={{ background: "transparent" }}
       bodyStyle={{ paddingTop: 0 }}
     >
-      <Tabs
-        // tabBarExtraContent={<CloseOutlined onClick={() => setOpen(false)} />}
-        defaultActiveKey="1"
-        items={items}
-      />
+      <Tabs defaultActiveKey="1" items={items} />
     </Drawer>
   );
 };

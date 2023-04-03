@@ -9,8 +9,8 @@ export const draw_percent_bar = (node, result) => {
 
   var xScale = d3.scaleLinear().domain([0, 1]).rangeRound([0, bar_width]);
 
-  var good_col = "#1b9e77",
-    bad_col = "#d95f02";
+  var good_col = "#2ca25f",
+    bad_col = "#cd201f";
 
   // !先清除
   d3.select(node).html("");

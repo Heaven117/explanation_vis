@@ -1,4 +1,4 @@
-id,percentage,category,predict
+id,percentage,category,prediction
 0,0.999846,TN,0
 1,0.202428,FP,1
 2,0.999996,TN,0

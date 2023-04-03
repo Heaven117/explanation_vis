@@ -3,7 +3,6 @@ import json
 import logging
 from pathlib import Path
 from datetime import datetime as dt
-
 import torch
 
 #  adult_column_names from "https://archive.ics.uci.edu/ml/datasets/Adult"
@@ -148,30 +147,3 @@ class MyEncoder(json.JSONEncoder):
 
 def toJson(data):
     return json.dumps(data,cls=MyEncoder)
-
-
-target_name = 'RiskPerformance'
-ft_names = ["External Risk Estimate", 
-            "Months Since Oldest Trade Open",
-            "Months Since Last Trade Open",
-            "Average Months in File",
-            "Satisfactory Trades",
-            "Trades 60+ Ever",
-            "Trades 90+ Ever",
-            "% Trades Never Delq.",
-            "Months Since Last Delq.",
-            "Max Delq. Last 12M",
-            "Max Delq. Ever",
-            "Total Trades",
-            "Trades Open Last 12M",
-            "% Installment Trades",
-            "Months Since Most Recent Inq",
-            "Inq Last 6 Months",
-            "Inq Last 6 Months exl. 7 days",
-            "Revolving Burden",
-            "Installment Burden",
-            "Revolving Trades w/ Balance:",
-            "Installment Trades w/ Balance",
-            "Bank Trades w/ High Utilization Ratio",
-            "% Trades w/ Balance"]
-

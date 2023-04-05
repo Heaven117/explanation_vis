@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import MenuBar from "./mods/MenuBar";
+import MenuBar from "./pages/MenuBar";
 import { Layout } from "antd";
 
 import "./index.scss";
@@ -7,8 +7,8 @@ import { useReducerContext } from "./service/store";
 import { api } from "./service/request";
 import _ from "lodash";
 import { MENU } from "./constants";
-import LocalPage from "./mods/LocalPage";
-import EditPage from "./mods/EditPage";
+import LocalPage from "./pages/LocalPage";
+import EditPage from "./pages/EditPage";
 
 const { Content, Footer, Sider } = Layout;
 

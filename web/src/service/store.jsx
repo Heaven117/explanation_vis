@@ -1,7 +1,6 @@
 import React, { createContext, useReducer, useContext } from "react";
 
 const store = {
-  totalSample: 0,
   rawData: undefined,
   currentId: undefined,
   curSample: undefined,
@@ -16,11 +15,6 @@ const reducer = (preState, action) => {
   switch (type) {
     default:
       return preState;
-    case "settotalSample":
-      return {
-        ...preState,
-        totalSample: payload,
-      };
     case "setRawData":
       return {
         ...preState,

@@ -17,27 +17,18 @@ int_col_len = -1
 
 def load_adult_income_dataset():
     # 获取数据集
-    # datafile=baseDir+args.data_path + args.dataset + '.data'
-    # adult_data = pd.read_csv(datafile, header = None, skipinitialspace=True,names = adult_column_names)
-    # adult_data,target = data_process(adult_data)
-
     datafile=args.data_path + args.dataset+'/final_data.csv'
     adult_data = pd.read_csv(datafile, header = 0)
     adult_data.drop('id',axis=1,inplace = True)
     target = adult_data['income']
     target = np.array(target)
     adult_data ,one_hot_encoder = data_encode_define(adult_data)
-
     return adult_data,target,one_hot_encoder
 
 def data_encode_define(dataset):
     df_object_col = [col for col in dataset.columns if dataset[col].dtype.name == 'object'] # 3个
     df_int_col = [col for col in dataset.columns if dataset[col].dtype.name != 'object'and col != 'income']
     
-    # 1.1原始ok编码
-    # dataset = pd.concat([dataset[df_int_col], pd.get_dummies(dataset[df_object_col])], axis = 1)
-
-    # 1.2适合Anchor的编码
     dataset = pd.concat([dataset[df_int_col],dataset[df_object_col]], axis = 1).values
     global int_col_len
     int_col_len = len(df_int_col)
@@ -65,9 +56,7 @@ def encoder_process(x_data,encoder):
     dataset = copy.deepcopy(x_data[:,:int_col_len])
     tmp = encoder.transform(x_data[:,int_col_len:]).toarray()
     dataset = np.concatenate((dataset,tmp),axis = 1)
-
     dataset = np.array(dataset, dtype = np.float32)
-
     return dataset
 
 
@@ -75,7 +64,7 @@ class Adult_data(Dataset) :
     def __init__(self,mode,tensor = True) :
         super(Adult_data, self).__init__()
         self.mode = mode
-        x_dataset,target,one_hot_encoder = load_adult_final_dataset()
+        x_dataset,target,one_hot_encoder = load_adult_income_dataset()
         x_dataset = encoder_process(x_dataset,one_hot_encoder)
         x_dataset = normalize(x_dataset,axis = 0,norm = 'max')
 
@@ -107,54 +96,3 @@ class Adult_data(Dataset) :
 
     def __len__(self) :
         return len(self.dataset)
-    
-
-if __name__ == "__main__":
-    # load_adult_income_dataset()
-    train_dataset = Adult_data(mode = 'train')
-    # test_dataset = Adult_data(mode = 'test')
-
-    # train_loader = DataLoader(train_dataset, batch_size = args.batch_size, shuffle = True, drop_last = False)
-    # test_loader = DataLoader(test_dataset, batch_size = args.batch_size, shuffle = False, drop_last = False)
-
-
-# 废弃
-def data_process2(adult_data):
-    # For more details on how the below transformations are made, please refer to https://rpubs.com/H_Zhu/235617
-    adult_data.replace("?", pd.NaT, inplace = True)
-    adult_data.drop('fnlwgt', axis = 1, inplace = True)
-    adult_data.drop('capital-gain', axis = 1, inplace = True)
-    adult_data.drop('capital-loss', axis = 1, inplace = True)
-    adult_data.drop('education', axis = 1, inplace = True)
-    adult_data.drop('relationship', axis = 1, inplace = True)
-    adult_data.drop('native-country', axis = 1, inplace = True)
-    adult_data = adult_data.astype({"age": np.int64, "educational-num": np.int64, "hours-per-week": np.int64})
-    adult_data = adult_data.replace({'workclass': {'Without-pay': 'Other/Unknown', 'Never-worked': 'Other/Unknown'}})
-    adult_data = adult_data.replace({'workclass': {'Federal-gov': 'Government', 'State-gov': 'Government',
-                                        'Local-gov': 'Government'}})
-    adult_data = adult_data.replace({'workclass': {'Self-emp-not-inc': 'Self-Employed', 'Self-emp-inc': 'Self-Employed'}})
-    adult_data = adult_data.replace({'workclass': {'?': 'Other/Unknown'}})
-    adult_data = adult_data.replace(
-            {
-                'occupation': {
-                    'Adm-clerical': 'White-Collar', 'Craft-repair': 'Blue-Collar',
-                    'Exec-managerial': 'White-Collar', 'Farming-fishing': 'Blue-Collar',
-                    'Handlers-cleaners': 'Blue-Collar',
-                    'Machine-op-inspct': 'Blue-Collar', 'Other-service': 'Service',
-                    'Priv-house-serv': 'Service',
-                    'Prof-specialty': 'Professional', 'Protective-serv': 'Service',
-                    'Tech-support': 'Service',
-                    'Transport-moving': 'Blue-Collar', 'Unknown': 'Other/Unknown',
-                    'Armed-Forces': 'Other/Unknown', '?': 'Other/Unknown'
-                }
-            }
-        )
-    adult_data = adult_data.replace({'marital-status': {'Married-civ-spouse': 'Married', 'Married-AF-spouse': 'Married',
-                                                            'Married-spouse-absent': 'Married', 'Never-married': 'Single'}})
-    adult_data = adult_data.replace({'income': {'<=50K': 0, '>50K': 1}})
-    target = adult_data["income"]
-    target = np.array(target)
-
-    # adult_data.to_csv(args.data_path+ 'final_adult.csv',index_label='id')
-
-    return adult_data,target

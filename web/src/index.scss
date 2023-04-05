@@ -1,10 +1,8 @@
 .App {
-  display: flex;
-  height: 100vh;
-  position: absolute;
+  background-color: #fff;
 
   .menuBar {
-    max-width: 256px;
+    max-width: 250px;
 
     .ant-list-item {
       border: none;
@@ -25,27 +23,23 @@
     }
   }
 
-  .main-content {
-    flex: 1;
-    padding: 24px;
-    display: flex;
-    .InfluencePart {
-      overflow: scroll;
-      height: 100%;
-      width: 400px;
-    }
+  .InfluencePart {
+    overflow: scroll;
+    height: 100%;
+    width: 400px;
   }
 
   .localPage {
     position: relative;
     width: 100%;
-    padding: 0 50px;
 
     .top {
       display: flex;
       align-items: center;
-      .showDrawerBtn {
+      .topBtn {
+        display: flex;
         margin-left: auto;
+        column-gap: 8px;
       }
     }
     .action {
@@ -67,7 +61,6 @@
     }
 
     .sampleTable {
-      height: 1000px;
       .hightLightCol {
         background-color: #e6f4ff;
       }

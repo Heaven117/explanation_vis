@@ -11,7 +11,7 @@ import { Button, Table } from "antd";
 import _ from "lodash";
 import { categoryTag, predictionTag } from "@/components/tags";
 
-const LocalTable = (props) => {
+const DiceTable = (props) => {
   const { tableData, featureName, loading } = props;
   const [data, setData] = useState([{ id: "0" }]);
 
@@ -23,44 +23,26 @@ const LocalTable = (props) => {
   };
 
   const getColumns = useMemo(() => {
-    const columns = columnsName.map((item) => ({
+    const columns = [
+    //   {
+    //     title: "index",
+    //     dataIndex: 0,
+    //     key: 0,
+    //     fixed: "left",
+    //     width: 120,
+    //     onCell: (dataType, index) => ({
+    //       colSpan: dataType?.description ? 9 : 1,
+    //     }),
+    //   },
+    ].concat();
+    const _columns = columnsName.map((item, index) => ({
       title: item,
-      dataIndex: item,
-      key: item,
-      className: featureName?.includes(item) ? "hightLightCol" : "",
-      onCell: sharedOnCell,
+      dataIndex: index + 1,
+      key: index + 1,
     }));
-    columns.unshift(
-      ...[
-        {
-          title: "id",
-          dataIndex: "id",
-          key: "id",
-          fixed: "left",
-          width: 120,
-          onCell: (dataType, index) => ({
-            colSpan: dataType?.description ? 9 : 1,
-          }),
-        },
-      ]
-    );
+    columns.concat(_columns);
     columns.push(
       ...[
-        {
-          title: "category",
-          key: "category",
-          dataIndex: "category",
-          onCell: sharedOnCell,
-          render: (_, record) => categoryTag(record?.category),
-        },
-        {
-          title: "prediction",
-          key: "prediction",
-          fixed: "right",
-          width: 110,
-          onCell: sharedOnCell,
-          render: (_, record) => predictionTag(record?.prediction),
-        },
         {
           title: "Action",
           key: "operation",
@@ -81,15 +63,14 @@ const LocalTable = (props) => {
 
   return (
     <Table
-      sticky
-      className="sampleTable"
+      className="diceTable"
       loading={loading}
       scroll={{ x: 1800 }}
       columns={getColumns}
-      rowKey="id"
+      rowKey={0}
       dataSource={data}
       pagination={false}
     />
   );
 };
-export default LocalTable;
+export default DiceTable;

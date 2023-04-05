@@ -2,10 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   PieChartOutlined,
   BarChartOutlined,
-  MenuFoldOutlined,
   EditOutlined,
-  CheckCircleFilled,
-  CloseCircleFilled,
 } from "@ant-design/icons";
 import { Button, Menu, Input } from "antd";
 import { useReducerContext } from "@/service/store";
@@ -19,28 +16,15 @@ const { Search } = Input;
 
 const ContainerHeight = 800;
 
-const MenuBar = ({ menu, setMenu }) => {
+const MenuBar = ({ activeMenu, setActiveMenu }) => {
   const {
     state: { currentId },
     dispatch,
   } = useReducerContext();
-  const [collapsed, setCollapsed] = useState(false);
   const [data, setData] = useState([]);
 
-  const toggleCollapsed = useCallback(() => {
-    setCollapsed(!collapsed);
-  }, [collapsed]);
-
-  const TitleLabel = useMemo(() => {
-    return (
-      <div onClick={toggleCollapsed}>
-        {collapsed ? <MenuFoldOutlined /> : "机器学习解释模型"}
-      </div>
-    );
-  }, [collapsed, toggleCollapsed]);
-
   const items = [
-    { key: MENU.title, label: TitleLabel, title: "展开菜单" },
+    { key: MENU.title, label: "机器学习解释模型" },
     {
       key: MENU.global,
       label: "Global Explanation",
@@ -57,31 +41,17 @@ const MenuBar = ({ menu, setMenu }) => {
 
   const onClick = useCallback(
     (index) => {
-      setMenu(MENU.local);
+      setActiveMenu(MENU.local);
       dispatch({ type: "setCurrentId", payload: index });
     },
     [dispatch]
   );
   const onSelect = useCallback(
     ({ item, key, keyPath, selectedKeys, domEvent }) => {
-      setMenu(key);
+      setActiveMenu(key);
     },
     []
   );
-
-  const getIcon = useCallback((sample) => {
-    const prcent = sample.percentage;
-    const category = sample.category;
-
-    let color = "#000";
-    if (category[0] === "T") {
-      color = "#2ca25f";
-    } else color = "#e34a33";
-    if (category[1] === "P") {
-      return <CheckCircleFilled style={{ color: color }} className="icon" />;
-    }
-    return <CloseCircleFilled style={{ color: color }} className="icon" />;
-  }, []);
 
   const onScroll = (e) => {
     if (
@@ -113,14 +83,10 @@ const MenuBar = ({ menu, setMenu }) => {
       <Menu
         defaultSelectedKeys={["global"]}
         mode="inline"
-        inlineCollapsed={collapsed}
         items={items}
         onSelect={onSelect}
       />
-      <div
-        className="sampleList"
-        style={{ visibility: collapsed ? "hidden" : "visible" }}
-      >
+      <div className="sampleList">
         <Search
           placeholder="search sample id"
           onSearch={onSearch}
@@ -140,7 +106,7 @@ const MenuBar = ({ menu, setMenu }) => {
                 <Button
                   className="sampleBtn"
                   type={
-                    sample.id === currentId && menu === MENU.local
+                    sample.id === currentId && activeMenu === MENU.local
                       ? "primary"
                       : "dashed"
                   }

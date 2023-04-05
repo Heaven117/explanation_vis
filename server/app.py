@@ -9,7 +9,6 @@ import pandas as pd
 import copy
 
 from utils.helper import *
-from models.mlp import load_model
 import warnings
 warnings.filterwarnings("ignore")  # 忽略UserWarning兼容性警告
 
@@ -18,19 +17,21 @@ np.random.seed(12345)
 # ------- Initialize file ------- #
 BASEDIR = './server/data/adult/'
 data_file = BASEDIR+'final_data.csv'
-pre_file = BASEDIR+'pred_data_all.csv'
+pre_file = BASEDIR+'pred_data.csv'
 raw_data = json.loads(pd.read_csv(data_file, header=0).to_json(orient='records'))
 pre_data = json.loads(pd.read_csv(pre_file, header=0).to_json(orient='records'))
 
-# 影响函数
 with open(BASEDIR + 'influence.json','r',encoding = 'utf-8') as fp:
     influenceData = json.load(fp)
     print('=====influence file read done')
 fp.close()
-
 with open(BASEDIR + 'anchors.json','r',encoding = 'utf-8') as fp:
     anchorData = json.load(fp)
     print('=====anchor file read done')
+fp.close()
+with open(BASEDIR + 'dice.json','r',encoding = 'utf-8') as fp:
+    diceData = json.load(fp)
+    print('=====dice file read done')
 fp.close()
 
 
@@ -38,7 +39,7 @@ fp.close()
 # 加载训练好的模型
 # model = load_model(BASEDIR+'svm_FICO_500.pth')
 # train_loader,test_loader,train_set,test_set= loader_data()
-model = load_model()
+# model = load_model()
 
 
 
@@ -149,9 +150,16 @@ def getSimilarData():
     return toJson(response)
 
 
-@app.route('/getDataLength')
-def getDataLength():
-    return toJson(len(raw_data))
+@app.route('/getDiceData')
+def getDiceData():
+    idx = request.args['params']
+    inData = diceData[str(idx)]
+    cfs_list = inData['cfs_list']
+
+    response = {}
+    response['cfs_list'] = cfs_list
+    return toJson(inData)
+
 
 # @app.route('/runModel',methods=['GET', 'POST'])
 # def runModel():

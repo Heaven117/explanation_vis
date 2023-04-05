@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import _ from "lodash";
 import LocalTable from "@/components/LocalTable";
+import DiceTable from "@/components/DiceTable";
 import { useReducerContext } from "@/service/store";
 import { Button } from "antd";
 import { adult_target_value as targetName } from "@/constants";
@@ -22,11 +23,13 @@ function LocalPage() {
     dispatch,
   } = useReducerContext();
   const percentBar = useRef();
-  const [openInfluencePart, setOpenInfluencePart] = useState(false);
+  const [inDrawerVisible, setInDrawerVisible] = useState(false);
+  const [diceVisible, setDiceVisible] = useState(false);
   const [featureIdx, setFeatureIdx] = useState(0);
   const [featureName, setFeatureName] = useState();
-  const [tableData, setTableData] = useState([{ id: "0" }]);
+  const [tableData, setTableData] = useState([]);
   const [tableLoading, setTableLoading] = useState(false);
+  const [cfsList, setCfsList] = useState([]);
 
   useEffect(() => {
     setTableLoading(true);
@@ -43,10 +46,6 @@ function LocalPage() {
   useEffect(() => {
     curSample && draw_percent_bar(percentBar.current, curSample?.percentage);
   }, [curSample]);
-
-  const showDrawer = () => {
-    setOpenInfluencePart(true);
-  };
 
   useEffect(() => {
     const anTmp = [];
@@ -103,14 +102,26 @@ function LocalPage() {
     });
   }, [compareItem?.id]);
 
+  const onDiceShow = () => {
+    setDiceVisible(true);
+    api("getDiceData", currentId).then((res) => {
+      setCfsList(res.cfs_list);
+    });
+  };
+
   return (
     <div className="localPage">
       <div className="top">
         <span style={{ marginRight: 50 }}>ID: {curSample?.id}</span>
         <svg ref={percentBar} className="percentBar" />
-        <Button type="primary" onClick={showDrawer} className="showDrawerBtn">
-          Open
-        </Button>
+        <div className="topBtn">
+          <Button type="primary" onClick={() => setInDrawerVisible(true)}>
+            Open Influence
+          </Button>
+          <Button type="primary" onClick={onDiceShow}>
+            Open Dice
+          </Button>
+        </div>
       </div>
       <div className="action">
         If all of these are true:
@@ -141,12 +152,17 @@ function LocalPage() {
         featureName={featureName}
       />
 
-      {/* 影响示例抽屉 */}
-      {openInfluencePart && (
-        <InfluenceDrawer
-          open={openInfluencePart}
-          setOpen={setOpenInfluencePart}
+      {diceVisible && (
+        <DiceTable
+          tableLoading={tableLoading}
+          tableData={cfsList}
+          featureName={featureName}
         />
+      )}
+
+      {/* 影响示例抽屉 */}
+      {inDrawerVisible && (
+        <InfluenceDrawer open={inDrawerVisible} setOpen={setInDrawerVisible} />
       )}
     </div>
   );

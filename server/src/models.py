@@ -9,9 +9,9 @@ import sys
 import os
 sys.path.append(os.curdir)
 
-from server.utils.parser import *
-from server.utils.helper import display_progress
-from server.models.data_process import *
+from utils.parser import *
+from utils.helper import display_progress
+from src.data_process import *
 
 import warnings
 warnings.filterwarnings("ignore")  # 忽略UserWarning兼容性警告

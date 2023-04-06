@@ -6,13 +6,20 @@ import React, {
   useRef,
 } from "react";
 import { useReducerContext } from "@/service/store";
-import { adult_process_names as columnsName } from "@/constants";
+import {
+  adult_process_names as columnsName,
+  adult_target_value as targetName,
+} from "@/constants";
 import { Button, Table } from "antd";
-import _ from "lodash";
+import { cloneDeep } from "lodash";
 import { categoryTag, predictionTag } from "@/components/tags";
 
 const DiceTable = (props) => {
-  const { tableData, featureName, loading } = props;
+  const { tableData, loading } = props;
+  const {
+    state: { currentId, curSample, curAnchor, compareItem },
+    dispatch,
+  } = useReducerContext();
   const [data, setData] = useState([{ id: "0" }]);
 
   const sharedOnCell = (dataType, index) => {
@@ -24,25 +31,37 @@ const DiceTable = (props) => {
 
   const getColumns = useMemo(() => {
     const columns = [
-    //   {
-    //     title: "index",
-    //     dataIndex: 0,
-    //     key: 0,
-    //     fixed: "left",
-    //     width: 120,
-    //     onCell: (dataType, index) => ({
-    //       colSpan: dataType?.description ? 9 : 1,
-    //     }),
-    //   },
-    ].concat();
+      {
+        title: "index",
+        dataIndex: 0,
+        key: 0,
+        fixed: "left",
+        width: 120,
+        render: (_, record, index) => index,
+      },
+    ];
     const _columns = columnsName.map((item, index) => ({
       title: item,
-      dataIndex: index + 1,
-      key: index + 1,
+      dataIndex: item,
+      key: item,
+      render: (_, record) => {
+        const re = cloneDeep(record[index]);
+        const cur = cloneDeep(curSample[item]);
+        // console.log(text, text2, text === text2);
+        return re === cur ? "-" : re;
+      },
     }));
-    columns.concat(_columns);
+    columns.push(..._columns);
     columns.push(
       ...[
+        {
+          title: "prediction",
+          key: "prediction",
+          fixed: "right",
+          width: 110,
+          onCell: sharedOnCell,
+          render: (_, record) => predictionTag(targetName[record[11]]),
+        },
         {
           title: "Action",
           key: "operation",
@@ -53,11 +72,12 @@ const DiceTable = (props) => {
         },
       ]
     );
+    console.log(columns);
     return columns;
-  }, [featureName]);
+  }, []);
 
   useEffect(() => {
-    // console.log(tableData);
+    console.log(tableData);
     setData(tableData);
   }, [tableData]);
 
@@ -67,7 +87,7 @@ const DiceTable = (props) => {
       loading={loading}
       scroll={{ x: 1800 }}
       columns={getColumns}
-      rowKey={0}
+      // rowKey={0}
       dataSource={data}
       pagination={false}
     />

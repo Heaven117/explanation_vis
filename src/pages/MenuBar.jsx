@@ -34,7 +34,7 @@ const MenuBar = ({ activeMenu, setActiveMenu }) => {
     {
       key: MENU.local,
       label: "Local Explanation",
-      children: [],
+      // children: [],
       icon: <BarChartOutlined />,
     },
   ];
@@ -81,45 +81,52 @@ const MenuBar = ({ activeMenu, setActiveMenu }) => {
   return (
     <div className="menuBar">
       <Menu
-        defaultSelectedKeys={["global"]}
+        selectedKeys={activeMenu}
         mode="inline"
         items={items}
         onSelect={onSelect}
       />
-      <div className="sampleList">
-        <Search
-          placeholder="search sample id"
-          onSearch={onSearch}
-          enterButton
-          allowClear
-        />
-        <List>
-          <VirtualList
-            data={data}
-            height={ContainerHeight}
-            itemHeight={47}
-            itemKey="id"
-            onScroll={onScroll}
-          >
-            {(sample) => (
-              <List.Item>
-                <Button
-                  className="sampleBtn"
-                  type={
-                    sample.id === currentId && activeMenu === MENU.local
-                      ? "primary"
-                      : "dashed"
-                  }
-                  onClick={() => onClick(sample.id)}
-                >
-                  {sample.id}
-                  {categoryTag(sample.category)}
-                </Button>
-              </List.Item>
-            )}
-          </VirtualList>
-        </List>
-      </div>
+      {activeMenu === MENU.local ? (
+        <div className="sampleList">
+          <Search
+            placeholder="search sample id"
+            onSearch={onSearch}
+            enterButton
+            allowClear
+          />
+          <List>
+            <VirtualList
+              data={data}
+              height={ContainerHeight}
+              itemHeight={47}
+              itemKey="id"
+              onScroll={onScroll}
+            >
+              {(sample) => (
+                <List.Item>
+                  <Button
+                    className="sampleBtn"
+                    type={
+                      sample.id === currentId && activeMenu === MENU.local
+                        ? "primary"
+                        : "dashed"
+                    }
+                    onClick={() => onClick(sample.id)}
+                  >
+                    {sample.id}
+                    {categoryTag(sample.category)}
+                  </Button>
+                </List.Item>
+              )}
+            </VirtualList>
+          </List>
+        </div>
+      ) : (
+        <div>
+          <div>Model Summary</div>
+          <div>Accuracy: 83.5%</div>
+        </div>
+      )}
     </div>
   );
 };

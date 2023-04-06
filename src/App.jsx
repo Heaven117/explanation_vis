@@ -13,7 +13,10 @@ import EditPage from "./pages/EditPage";
 const { Content, Footer, Sider } = Layout;
 
 function App() {
-  const { dispatch } = useReducerContext();
+  const {
+    state: { currentId },
+    dispatch,
+  } = useReducerContext();
   const [activeMenu, setActiveMenu] = useState("edit");
 
   return (
@@ -36,7 +39,7 @@ function App() {
         style={{ marginLeft: 200, background: "white" }}
       >
         <Content style={{ margin: "24px 50px", overflow: "initial" }}>
-          {activeMenu === MENU.local && <LocalPage />}
+          {activeMenu === MENU.local && !_.isNil(currentId) && <LocalPage />}
           {activeMenu === MENU.edit && <EditPage />}
         </Content>
         <Footer style={{ textAlign: "center" }}>

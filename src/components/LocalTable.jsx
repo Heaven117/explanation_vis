@@ -50,6 +50,7 @@ const LocalTable = (props) => {
           title: "category",
           key: "category",
           dataIndex: "category",
+          fixed: "right",
           onCell: sharedOnCell,
           render: (_, record) => categoryTag(record?.category),
         },
@@ -61,21 +62,21 @@ const LocalTable = (props) => {
           onCell: sharedOnCell,
           render: (_, record) => predictionTag(record?.prediction),
         },
-        {
-          title: "Action",
-          key: "operation",
-          fixed: "right",
-          width: 100,
-          onCell: sharedOnCell,
-          render: () => <a>action</a>,
-        },
+        // {
+        //   title: "Action",
+        //   key: "operation",
+        //   fixed: "right",
+        //   width: 100,
+        //   onCell: sharedOnCell,
+        //   render: () => <a>action</a>,
+        // },
       ]
     );
     return columns;
   }, [featureName]);
 
   useEffect(() => {
-    // console.log(tableData);
+    console.log("tableData", tableData);
     setData(tableData);
   }, [tableData]);
 

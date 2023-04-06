@@ -9,7 +9,7 @@ import _ from "lodash";
 import LocalTable from "@/components/LocalTable";
 import DiceTable from "@/components/DiceTable";
 import { useReducerContext } from "@/service/store";
-import { Button } from "antd";
+import { Button, Tabs } from "antd";
 import { adult_target_value as targetName } from "@/constants";
 
 import InfluenceDrawer from "../components/InfluenceDrawer";
@@ -30,6 +30,8 @@ function LocalPage() {
   const [tableData, setTableData] = useState([]);
   const [tableLoading, setTableLoading] = useState(false);
   const [cfsList, setCfsList] = useState([]);
+  const [posData, setPosData] = useState([]);
+  const [negData, setNegData] = useState([]);
 
   useEffect(() => {
     setTableLoading(true);
@@ -41,33 +43,40 @@ function LocalPage() {
         payload: { sample: sample, anchor: anchor },
       });
     });
+    api("getDiceData", currentId).then((res) => {
+      setCfsList(res.cfs_list);
+      setDiceVisible(true);
+    });
   }, [currentId, dispatch]);
 
   useEffect(() => {
+    setTableData([curSample]);
     curSample && draw_percent_bar(percentBar.current, curSample?.percentage);
   }, [curSample]);
 
   useEffect(() => {
-    const anTmp = [];
-    const ct = curAnchor?.examples[featureIdx].covered_true;
-    const cf = curAnchor?.examples[featureIdx].covered_false;
-    targetName[0] === curSample?.prediction
-      ? anTmp.push(...[ct, cf])
-      : anTmp.push(...[cf, ct]);
+    setPosData(curAnchor?.examples[featureIdx].covered_true);
+    setNegData(curAnchor?.examples[featureIdx].covered_false);
+    // const anTmp = [];
+    // const ct = curAnchor?.examples[featureIdx].covered_true;
+    // const cf = curAnchor?.examples[featureIdx].covered_false;
+    // targetName[0] === curSample?.prediction
+    //   ? anTmp.push(...[ct, cf])
+    //   : anTmp.push(...[cf, ct]);
 
-    setTableData([
-      curSample,
-      {
-        id: `Examples where the modelagent predicts ${targetName[0]}`,
-        description: true,
-        children: anTmp[0],
-      },
-      {
-        id: `Examples where the modelagent predicts ${targetName[1]}`,
-        description: true,
-        children: anTmp[1],
-      },
-    ]);
+    // setTableData([
+    //   curSample,
+    //   {
+    //     id: `Examples where the modelagent predicts ${targetName[0]}`,
+    //     description: true,
+    //     children: anTmp[0],
+    //   },
+    //   {
+    //     id: `Examples where the modelagent predicts ${targetName[1]}`,
+    //     description: true,
+    //     children: anTmp[1],
+    //   },
+    // ]);
   }, [curAnchor, curSample, featureIdx]);
 
   useEffect(() => {
@@ -102,12 +111,56 @@ function LocalPage() {
     });
   }, [compareItem?.id]);
 
-  const onDiceShow = () => {
-    setDiceVisible(true);
-    api("getDiceData", currentId).then((res) => {
-      setCfsList(res.cfs_list);
-    });
+  const onTabChange = (key) => {
+    console.log(key);
   };
+
+  const TabItems = [
+    {
+      key: "1",
+      label: `相似正例`,
+      children: (
+        <div key="ksksks">
+          <LocalTable
+            // key="相似正例"
+            // tableLoading={tableLoading}
+            tableData={posData}
+            featureName={featureName}
+          />
+        </div>
+      ),
+    },
+    {
+      key: "2",
+      label: `相似反例`,
+      children: (
+        <div key="0222">
+          <LocalTable
+            // key="相似反例"
+            // tableLoading={tableLoading}
+            tableData={negData}
+            featureName={featureName}
+          />
+        </div>
+      ),
+    },
+    {
+      key: "3",
+      label: `反事实解释`,
+      children: (
+        <DiceTable
+          tableLoading={tableLoading}
+          tableData={cfsList}
+          featureName={featureName}
+        />
+      ),
+    },
+    {
+      key: "4",
+      label: `Tab 3`,
+      children: `Content of Tab Pane 3`,
+    },
+  ];
 
   return (
     <div className="localPage">
@@ -118,9 +171,7 @@ function LocalPage() {
           <Button type="primary" onClick={() => setInDrawerVisible(true)}>
             Open Influence
           </Button>
-          <Button type="primary" onClick={onDiceShow}>
-            Open Dice
-          </Button>
+          <Button type="primary">Open Dice</Button>
         </div>
       </div>
       <div className="action">
@@ -151,14 +202,7 @@ function LocalPage() {
         tableData={tableData}
         featureName={featureName}
       />
-
-      {diceVisible && (
-        <DiceTable
-          tableLoading={tableLoading}
-          tableData={cfsList}
-          featureName={featureName}
-        />
-      )}
+      <Tabs defaultActiveKey="1" items={TabItems} onChange={onTabChange} />
 
       {/* 影响示例抽屉 */}
       {inDrawerVisible && (

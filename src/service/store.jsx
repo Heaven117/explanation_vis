@@ -2,7 +2,7 @@ import React, { createContext, useReducer, useContext } from "react";
 
 const store = {
   rawData: undefined,
-  currentId: undefined,
+  currentId: 0,
   curSample: undefined,
   curAnchor: undefined,
   compareItem: undefined,
@@ -24,6 +24,10 @@ const reducer = (preState, action) => {
       return {
         ...preState,
         curSample: payload.sample,
+      };
+    case "setCurAnchor":
+      return {
+        ...preState,
         curAnchor: payload.anchor,
       };
     case "setCurrentId":

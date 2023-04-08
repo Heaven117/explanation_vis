@@ -12,7 +12,7 @@ const InfluenceDrawer = ({ open, setOpen }) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    api("getSimilarData", currentId).then((res) => {
+    api("getInfluenceData", currentId).then((res) => {
       setData(res);
     });
   }, [currentId]);

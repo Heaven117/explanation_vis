@@ -34,7 +34,6 @@ const MenuBar = ({ activeMenu, setActiveMenu }) => {
     {
       key: MENU.local,
       label: "Local Explanation",
-      // children: [],
       icon: <BarChartOutlined />,
     },
   ];

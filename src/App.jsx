@@ -17,7 +17,7 @@ function App() {
     state: { currentId },
     dispatch,
   } = useReducerContext();
-  const [activeMenu, setActiveMenu] = useState("edit");
+  const [activeMenu, setActiveMenu] = useState(MENU.local);
 
   return (
     <Layout hasSider className="App">

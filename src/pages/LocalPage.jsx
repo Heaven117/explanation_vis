@@ -6,78 +6,54 @@ import React, {
   useState,
 } from "react";
 import _ from "lodash";
-import LocalTable from "@/components/LocalTable";
-import DiceTable from "@/components/DiceTable";
+import SampleDesc from "@/components/SampleDesc";
 import { useReducerContext } from "@/service/store";
 import { Button, Tabs } from "antd";
-import { adult_target_value as targetName } from "@/constants";
+import { adult_target_value as targetName, TabItems } from "@/constants";
 
 import InfluenceDrawer from "../components/InfluenceDrawer";
 import { predictionTag } from "@/components/tags";
 import { draw_percent_bar } from "@/components/percentage_bar";
+import { drawRadialStackedBarChart } from "@/components/radialBarChart";
 import { api } from "@/service/request";
 
 function LocalPage() {
   const {
-    state: { currentId, curSample, curAnchor, compareItem },
+    state: { currentId, curSample, curAnchor },
     dispatch,
   } = useReducerContext();
   const percentBar = useRef();
-  const [inDrawerVisible, setInDrawerVisible] = useState(false);
-  const [diceVisible, setDiceVisible] = useState(false);
+  const RadialArea = useRef();
+  const [tab, setTab] = useState(3);
   const [featureIdx, setFeatureIdx] = useState(0);
   const [featureName, setFeatureName] = useState();
-  const [tableData, setTableData] = useState([]);
-  const [tableLoading, setTableLoading] = useState(false);
+  const [sampleData, setSampleData] = useState([]);
   const [cfsList, setCfsList] = useState([]);
-  const [posData, setPosData] = useState([]);
-  const [negData, setNegData] = useState([]);
+  const [inDrawerVisible, setInDrawerVisible] = useState(false);
 
   useEffect(() => {
-    setTableLoading(true);
     api("getInstance", currentId).then((res) => {
-      const { sample, anchor } = res;
-      setTableLoading(false);
+      const { sample } = res;
       dispatch({
         type: "setCurSample",
-        payload: { sample: sample, anchor: anchor },
+        payload: { sample: sample },
+      });
+    });
+    api("getAnchor", currentId).then((res) => {
+      dispatch({
+        type: "setCurAnchor",
+        payload: { anchor: res },
       });
     });
     api("getDiceData", currentId).then((res) => {
       setCfsList(res.cfs_list);
-      setDiceVisible(true);
     });
   }, [currentId, dispatch]);
 
   useEffect(() => {
-    setTableData([curSample]);
+    setSampleData([curSample]);
     curSample && draw_percent_bar(percentBar.current, curSample?.percentage);
   }, [curSample]);
-
-  useEffect(() => {
-    setPosData(curAnchor?.examples[featureIdx].covered_true);
-    setNegData(curAnchor?.examples[featureIdx].covered_false);
-    // const anTmp = [];
-    // const ct = curAnchor?.examples[featureIdx].covered_true;
-    // const cf = curAnchor?.examples[featureIdx].covered_false;
-    // targetName[0] === curSample?.prediction
-    //   ? anTmp.push(...[ct, cf])
-    //   : anTmp.push(...[cf, ct]);
-
-    // setTableData([
-    //   curSample,
-    //   {
-    //     id: `Examples where the modelagent predicts ${targetName[0]}`,
-    //     description: true,
-    //     children: anTmp[0],
-    //   },
-    //   {
-    //     id: `Examples where the modelagent predicts ${targetName[1]}`,
-    //     description: true,
-    //     children: anTmp[1],
-    //   },
-    // ]);
-  }, [curAnchor, curSample, featureIdx]);
 
   useEffect(() => {
     setFeatureIdx(0);
@@ -92,87 +68,27 @@ function LocalPage() {
     [curAnchor?.feature]
   );
 
-  useEffect(() => {
-    if (!compareItem) return;
-    api("getInstance", compareItem.id).then((res) => {
-      const { sample, anchor } = res;
-      const child = tableData[3]?.children
-        ? [...tableData[3]?.children, sample]
-        : [sample];
-
-      setTableData([
-        ...tableData.slice(0, 3),
-        {
-          id: `influence example`,
-          description: true,
-          children: _.uniqBy(child, "id"),
-        },
-      ]);
-    });
-  }, [compareItem?.id]);
-
-  const onTabChange = (key) => {
-    console.log(key);
+  const drawRadialChart = () => {
+    drawRadialStackedBarChart(RadialArea);
   };
 
-  const TabItems = [
-    {
-      key: "1",
-      label: `相似正例`,
-      children: (
-        <div key="ksksks">
-          <LocalTable
-            // key="相似正例"
-            // tableLoading={tableLoading}
-            tableData={posData}
-            featureName={featureName}
-          />
-        </div>
-      ),
-    },
-    {
-      key: "2",
-      label: `相似反例`,
-      children: (
-        <div key="0222">
-          <LocalTable
-            // key="相似反例"
-            // tableLoading={tableLoading}
-            tableData={negData}
-            featureName={featureName}
-          />
-        </div>
-      ),
-    },
-    {
-      key: "3",
-      label: `反事实解释`,
-      children: (
-        <DiceTable
-          tableLoading={tableLoading}
-          tableData={cfsList}
-          featureName={featureName}
-        />
-      ),
-    },
-    {
-      key: "4",
-      label: `Tab 3`,
-      children: `Content of Tab Pane 3`,
-    },
-  ];
+  const onTabChange = (key) => {
+    setTab(key);
+    if (key === 4) drawRadialChart();
+    console.log(key);
+  };
 
   return (
     <div className="localPage">
       <div className="top">
         <span style={{ marginRight: 50 }}>ID: {curSample?.id}</span>
         <svg ref={percentBar} className="percentBar" />
-        <div className="topBtn">
+        {/* <div className="topBtn">
           <Button type="primary" onClick={() => setInDrawerVisible(true)}>
             Open Influence
           </Button>
           <Button type="primary">Open Dice</Button>
-        </div>
+        </div> */}
       </div>
       <div className="action">
         If all of these are true:
@@ -189,21 +105,45 @@ function LocalPage() {
             </Button>
           ))}
         </span>
+        <br />
+        <br />
         The model will predict&nbsp;
         {predictionTag(curSample?.prediction)}
         <span style={{ fontSize: 20, fontWeight: 500 }}>
-          {Number(curAnchor?.precision[featureIdx] * 100).toFixed(2)}%
+          {Number(curAnchor?.precision[featureIdx] * 100).toFixed(2)}&nbsp;%
         </span>
-        &nbsp;of the time
+        &nbsp;of the time And samples coverage is :&nbsp;
+        <span style={{ fontSize: 20, fontWeight: 500 }}>
+          {curAnchor?.coverage[featureIdx] === -1
+            ? "None"
+            : Number(curAnchor?.coverage[featureIdx] * 100).toFixed(2)}
+          &nbsp; %
+        </span>
+        <br />
       </div>
-
-      <LocalTable
+      <Tabs defaultActiveKey={tab} items={TabItems} onChange={onTabChange} />
+      <div style={{ display: "flex", columnGap: 50 }}>
+        <SampleDesc featureName={featureName} descData={sampleData} />
+        {/* <LocalTable
         tableLoading={tableLoading}
-        tableData={tableData}
+        sampleData={sampleData}
         featureName={featureName}
-      />
-      <Tabs defaultActiveKey="1" items={TabItems} onChange={onTabChange} />
-
+      /> */}
+        {tab === 1 && (
+          <SampleDesc
+            featureName={featureName}
+            descData={curAnchor?.covered_true[featureIdx]}
+          />
+        )}
+        {tab === 2 && (
+          <SampleDesc
+            featureName={featureName}
+            descData={curAnchor?.covered_false[featureIdx]}
+          />
+        )}
+        {tab === 3 && <SampleDesc isDice={true} descData={cfsList} />}
+        {tab === 4 && <svg ref={RadialArea} className="RadialArea" />}
+      </div>
       {/* 影响示例抽屉 */}
       {inDrawerVisible && (
         <InfluenceDrawer open={inDrawerVisible} setOpen={setInDrawerVisible} />

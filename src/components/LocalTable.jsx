@@ -85,7 +85,7 @@ const LocalTable = (props) => {
       sticky
       className="sampleTable"
       loading={loading}
-      scroll={{ x: 1800 }}
+      scroll={{ x: 1800, y: 500 }}
       columns={getColumns}
       rowKey="id"
       dataSource={data}

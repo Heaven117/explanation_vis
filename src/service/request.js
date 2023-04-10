@@ -15,8 +15,10 @@ export const api = (url, params = {}, method = "GET") => {
       return instance
         .get(url, { params: params })
         .then((res) => {
-          console.log(url, res.data);
-          return res.data;
+          if (res.data) {
+            console.log(url, res.data);
+            return res.data;
+          } else throw Error(res);
         })
         .catch(function (error) {
           console.log(error);

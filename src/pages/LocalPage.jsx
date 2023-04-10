@@ -25,11 +25,12 @@ function LocalPage() {
   } = useReducerContext();
   const percentBar = useRef();
   const RadialArea = useRef();
-  const [tab, setTab] = useState(3);
+  const [tab, setTab] = useState(1);
   const [featureIdx, setFeatureIdx] = useState(0);
   const [featureName, setFeatureName] = useState();
   const [sampleData, setSampleData] = useState([]);
   const [infData, setInfData] = useState();
+  const [infSelect, setInfSelect] = useState();
   const [cfsList, setCfsList] = useState([]);
   const [inDrawerVisible, setInDrawerVisible] = useState(false);
   const [sliderVal, setSliderVal] = useState([-0.2, 0.2]);
@@ -39,7 +40,7 @@ function LocalPage() {
     api("getInstance", currentId).then((res) => {
       const { sample } = res;
       setSampleData([sample]);
-      draw_percent_bar(percentBar.current, sample?.percentage);
+      // draw_percent_bar(percentBar.current, sample?.percentage);
       dispatch({
         type: "setCurSample",
         payload: { sample: sample },
@@ -62,6 +63,17 @@ function LocalPage() {
     },
     [curAnchor?.feature]
   );
+  const onRadialCallback = useCallback(
+    (data) => {
+      const { id, value } = data;
+      dispatch({ type: "setCompareItem", payload: id });
+      api("getInstance", id).then((res) => {
+        const { sample } = res;
+        setInfSelect({ data: [sample], value: value });
+      });
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     if (tab !== 4 || !infData) return;
@@ -71,13 +83,13 @@ function LocalPage() {
       innerRadius: 0,
       outerRadius: 150,
     };
-    var tmp = [].concat(infData.harmful, infData.helpful);
+    const tmp = [...infData.helpful, ...infData.harmful];
     const data = tmp?.filter(
       (item) => item.value >= sliderVal[0] && item.value <= sliderVal[1]
     );
     console.log(data);
-    radialBarChart(RadialArea.current, config, data);
-  }, [infData, sliderVal, tab]);
+    radialBarChart(RadialArea.current, config, data, onRadialCallback);
+  }, [infData, onRadialCallback, sliderVal, tab]);
 
   const onTabChange = (key) => {
     setTab(key);
@@ -99,16 +111,10 @@ function LocalPage() {
 
   return (
     <div className="localPage">
-      <div className="top">
+      {/* <div className="top">
         <span style={{ marginRight: 50 }}>ID: {curSample?.id}</span>
         <svg ref={percentBar} className="percentBar" />
-        {/* <div className="topBtn">
-          <Button type="primary" onClick={() => setInDrawerVisible(true)}>
-            Open Influence
-          </Button>
-          <Button type="primary">Open Dice</Button>
-        </div> */}
-      </div>
+      </div> */}
       <div className="action">
         If all of these are true:
         <span className="buttonGroup">
@@ -162,23 +168,30 @@ function LocalPage() {
         )}
         {tab === 3 && <SampleDesc isDice={true} descData={cfsList} />}
         {tab === 4 && (
-          <div>
-            <Slider
-              style={{ width: 100 }}
-              range
-              onChange={setSliderVal}
-              value={sliderVal}
-              // defaultValue={[-0.1, 0.1]}
-              max={infData?.max}
-              min={infData?.min}
-              step={(infData?.max - infData?.min) / 100}
+          <>
+            <SampleDesc
+              featureName={featureName}
+              descData={infSelect?.data}
+              infValue={infSelect?.value}
             />
-            <svg
-              ref={RadialArea}
-              className="RadialArea"
-              style={{ position: "relative" }}
-            />
-          </div>
+            <div>
+              <Slider
+                style={{ width: 100 }}
+                range
+                onChange={setSliderVal}
+                value={sliderVal}
+                // defaultValue={[-0.1, 0.1]}
+                max={infData?.max}
+                min={infData?.min}
+                step={(infData?.max - infData?.min) / 100}
+              />
+              <svg
+                ref={RadialArea}
+                className="RadialArea"
+                style={{ position: "relative" }}
+              />
+            </div>
+          </>
         )}
       </div>
       {/* 影响示例抽屉 */}

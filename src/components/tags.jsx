@@ -1,7 +1,8 @@
 import { Tag } from "antd";
 import { adult_target_value as targetName } from "@/constants";
-import { CloseCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import _ from "lodash";
 export const categoryTag = (category) => {
+  if (!category) return null;
   let color = "grey";
   switch (category) {
     case "TP":
@@ -27,9 +28,10 @@ export const categoryTag = (category) => {
 };
 
 export const predictionTag = (prediction) => {
+  if (_.isNil(prediction)) return null;
   return (
-    <Tag color={prediction === targetName[0] ? "#cd201f" : "#2ca25f"}>
-      {prediction}
+    <Tag color={prediction ? "#2ca25f" : "#cd201f"}>
+      {targetName[prediction]}
     </Tag>
   );
 };

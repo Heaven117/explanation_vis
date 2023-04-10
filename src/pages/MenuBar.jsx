@@ -62,7 +62,7 @@ const MenuBar = ({ activeMenu, setActiveMenu }) => {
   };
   const appendData = () => {
     api("getPredData", {}).then((res) => {
-      setData(data.concat(res.data));
+      res.data && setData(data.concat(res?.data));
     });
   };
   const onSearch = (idx) => {
@@ -101,18 +101,18 @@ const MenuBar = ({ activeMenu, setActiveMenu }) => {
               itemKey="id"
               onScroll={onScroll}
             >
-              {(sample) => (
+              {(sample, index) => (
                 <List.Item>
                   <Button
                     className="sampleBtn"
                     type={
-                      sample.id === currentId && activeMenu === MENU.local
+                      index === currentId && activeMenu === MENU.local
                         ? "primary"
                         : "dashed"
                     }
-                    onClick={() => onClick(sample.id)}
+                    onClick={() => onClick(index)}
                   >
-                    {sample.id}
+                    {index}
                     {categoryTag(sample.category)}
                   </Button>
                 </List.Item>

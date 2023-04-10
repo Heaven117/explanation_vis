@@ -6,12 +6,14 @@ import React, {
   useState,
 } from "react";
 import { useReducerContext } from "@/service/store";
+import _ from "lodash";
 
 import { Button, Descriptions, Pagination } from "antd";
 import { adult_process_names as columnsName } from "@/constants";
-import { predictionTag, categoryTag } from "@/components/tags";
+import { predictionTag, categoryTag } from "../components/tags";
 
-const SampleDesc = ({ descData, featureName, isDice = false }) => {
+const SampleDesc = (props) => {
+  const { descData, featureName = null, isDice = false, infValue } = props;
   const {
     state: { curSample },
   } = useReducerContext();
@@ -26,7 +28,7 @@ const SampleDesc = ({ descData, featureName, isDice = false }) => {
   const onChange = (page) => {
     // console.log(page);
     setCurrent(page);
-    setData(descData[page - 1]);
+    setData(descData?.[page - 1]);
   };
 
   const Title = useMemo(() => {
@@ -36,7 +38,12 @@ const SampleDesc = ({ descData, featureName, isDice = false }) => {
       <div>
         <span style={{ marginRight: 10 }}>ID: {data?.id}</span>
         <span>{categoryTag(data?.category)}</span>
-        <span>{predictionTag(data?.prediction)}</span>
+        <span>
+          {predictionTag(
+            _.isNil(data?.prediction) ? data?.income : data?.prediction
+          )}
+        </span>
+        <span>{infValue}</span>
       </div>
     );
   }, [data, isDice]);
@@ -68,7 +75,7 @@ const SampleDesc = ({ descData, featureName, isDice = false }) => {
         current={current}
         onChange={onChange}
         defaultPageSize={1}
-        total={descData.length}
+        total={descData?.length}
         size="small"
         showSizeChanger={false}
         style={{ marginTop: 20 }}

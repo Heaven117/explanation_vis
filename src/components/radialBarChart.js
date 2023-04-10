@@ -1,15 +1,9 @@
 import * as d3 from "d3";
 
 // node 为ref.current
-export const radialBarChart = (node, config, data) => {
+export const radialBarChart = (node, config, data, onRadialCallback) => {
   d3.select(node).html("");
   data = JSON.parse(JSON.stringify(data));
-  // console.log(data);
-  // const newData = data.map(d => {
-  //   d.value = Math.abs(d.value)
-  //   return d
-  // });
-  // console.log(newData);
 
   const emptyHeight = config.height / 4;
 
@@ -160,36 +154,10 @@ export const radialBarChart = (node, config, data) => {
   };
 
   var time_s = true;
-  let lastPos = [
-    {
-      x: config.width / 2 - 5,
-      y: config.height,
-    },
-    {
-      x: config.width / 2 + 5,
-      y: config.height,
-    },
-  ];
-  // let lastPos = [
-  //   calAngle(config.width / 2 - 5, config.height),
-  //   calAngle(config.width / 2 + 5, config.height),
-  // ];
-  console.log(config.width / 2 - 5, config.height);
-
   const drag_x = (data, width, height) => {
-    function dragstarted(event, d) {
-      event.sourceEvent.stopPropagation();
-      console.log(
-        "dragstarted",
-        event,
-        config.width - event.sourceEvent.layerX,
-        config.height - event.sourceEvent.layerY
-      );
-    }
+    function dragstarted(event, d) {}
     function dragCircle(event, d, i) {
       event.sourceEvent.stopPropagation();
-
-      // console.log("index", i, d);
       // 延时刷新
       if (time_s) {
         time_s = false;
@@ -201,30 +169,6 @@ export const radialBarChart = (node, config, data) => {
       }
       const mouseX = event.sourceEvent.layerX;
       const mouseY = config.height - event.sourceEvent.layerY;
-      // var Angle = 0;
-      // var A = { x: width, y: height };
-      // var B = { x: width, y: 0 };
-      // var lengthAB = Math.sqrt(Math.pow(A.x - B.x, 2) + Math.pow(A.y - B.y, 2));
-      // var lengthAC = Math.sqrt(
-      //   Math.pow(A.x - event.sourceEvent.layerX, 2) +
-      //     Math.pow(A.y - event.sourceEvent.layerY, 2)
-      // );
-      // var lengthBC = Math.sqrt(
-      //   Math.pow(B.x - event.sourceEvent.layerX, 2) +
-      //     Math.pow(B.y - event.sourceEvent.layerY, 2)
-      // );
-      // var cosA =
-      //   (Math.pow(lengthAB, 2) +
-      //     Math.pow(lengthAC, 2) -
-      //     Math.pow(lengthBC, 2)) /
-      //   (2 * lengthAB * lengthAC);
-      // Angle = Math.acos(cosA);
-
-      // if (event.sourceEvent.layerX < width) Angle = 2 * Math.PI - Angle;
-
-      // d3.select(this)
-      //   .attr("transform", `rotate(${(Angle * 180) / Math.PI}, ${0} ${0})`)
-      //   .attr("text", Angle);
 
       d3.select(this)
         .data([
@@ -234,19 +178,16 @@ export const radialBarChart = (node, config, data) => {
           },
         ])
         .attr("d", arc_brush)
-        .attr("text", (d) => d);
+        .attr("text", (d) => d.startAngle);
 
-      console.log("event", mouseX, mouseY, lastPos[0]);
-
-      if (d3.select(this).attr("class") == "Selec_cri") {
-        var a =
-          parseFloat(
-            d3.selectAll(".Selec_cri")._groups[0][0].attributes.text.value
-          ) - 0.0001;
+      if (d3.select(this).attr("class") === "Selec_cri") {
+        var a = parseFloat(
+          d3.selectAll(".Selec_cri")._groups[0][0].attributes.text.value
+        );
         var b =
           parseFloat(
             d3.selectAll(".Selec_cri")._groups[0][1].attributes.text.value
-          ) + 0.01;
+          ) - 0.04;
         if (a > b) a = -2 * Math.PI + a;
 
         // 绘制指针间扇形面积
@@ -295,10 +236,10 @@ export const radialBarChart = (node, config, data) => {
       .padding(0.1);
     const y = d3
       .scaleLinear()
-      .domain([0, d3.max(testdata, (d) => d.value)])
+      .domain([0, d3.max(testdata, (d) => Math.abs(d.value))])
       .rangeRound([width, width - 90]);
 
-    testdata.columns = Object.keys(testdata[0]).slice(0, 4);
+    // testdata.columns = Object.keys(testdata[0]).slice(0, 4);
 
     scaleMap_g
       .selectAll("g")
@@ -310,13 +251,10 @@ export const radialBarChart = (node, config, data) => {
       .join("rect")
       .attr("class", "selectRect")
       .attr("x", (d, i) => x(d.data.id))
-      .attr("y", (d) => {
-        return y(d[1]);
-      })
+      .attr("y", (d) => 200 - Math.abs(y(d[0]) - y(d[1])))
       .on("click", (event, d) => {
-        //小矩形的id  例，u217
         console.log(d.data.id);
-        // store.commit("global/SET_USER_ID", d.data.id);
+        onRadialCallback(d.data);
       })
       .attr("id", (d) => "rect_" + d.data.id)
       .attr("transform", `translate(0, 0)`)
@@ -350,12 +288,12 @@ export const radialBarChart = (node, config, data) => {
     .attr("fill", "#7b6888")
     .attr("class", "Selec_cri")
     .call(drag_x(data, config.width / 2, config.height / 2))
-    .attr("text", 0)
+    .attr("text", (d) => d.startAngle)
     .attr("z-index", 99)
     .attr("transform", `rotate(${0}, ${0} ${0})`)
     .attr("opacity", "0.7");
 
-  inter.append("g").attr("class", "Selec_area");
+  inter.append("g").attr("class", "Selec_area").attr("z-index", 0);
 
   const scaleMap_g = SVG.append("g").attr("class", "scaleMap_g");
 };

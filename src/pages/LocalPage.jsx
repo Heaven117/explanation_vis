@@ -6,16 +6,17 @@ import React, {
   useState,
 } from "react";
 import _ from "lodash";
-import SampleDesc from "@/components/SampleDesc";
+import SampleDesc from "../components/SampleDesc";
 import { useReducerContext } from "@/service/store";
-import { Button, Tabs } from "antd";
-import { adult_target_value as targetName, TabItems } from "@/constants";
+import { Button, Tabs, Slider } from "antd";
+import { adult_target_value as targetName, TabItems } from "../constants";
 
 import InfluenceDrawer from "../components/InfluenceDrawer";
-import { predictionTag } from "@/components/tags";
-import { draw_percent_bar } from "@/components/percentage_bar";
-import { drawRadialStackedBarChart } from "@/components/radialBarChart";
-import { api } from "@/service/request";
+import { predictionTag } from "../components/tags";
+import { draw_percent_bar } from "../components/percentage_bar";
+import { radialBarChart } from "../components/radialBarChart";
+import { api } from "../service/request";
+import * as d3 from "d3";
 
 function LocalPage() {
   const {
@@ -28,37 +29,31 @@ function LocalPage() {
   const [featureIdx, setFeatureIdx] = useState(0);
   const [featureName, setFeatureName] = useState();
   const [sampleData, setSampleData] = useState([]);
+  const [infData, setInfData] = useState();
   const [cfsList, setCfsList] = useState([]);
   const [inDrawerVisible, setInDrawerVisible] = useState(false);
+  const [sliderVal, setSliderVal] = useState([-0.2, 0.2]);
 
+  // api获取示例、anchor、dice
   useEffect(() => {
     api("getInstance", currentId).then((res) => {
       const { sample } = res;
+      setSampleData([sample]);
+      draw_percent_bar(percentBar.current, sample?.percentage);
       dispatch({
         type: "setCurSample",
         payload: { sample: sample },
       });
     });
     api("getAnchor", currentId).then((res) => {
+      setFeatureIdx(0);
+      setFeatureName(res?.feature[0]);
       dispatch({
         type: "setCurAnchor",
         payload: { anchor: res },
       });
     });
-    api("getDiceData", currentId).then((res) => {
-      setCfsList(res.cfs_list);
-    });
   }, [currentId, dispatch]);
-
-  useEffect(() => {
-    setSampleData([curSample]);
-    curSample && draw_percent_bar(percentBar.current, curSample?.percentage);
-  }, [curSample]);
-
-  useEffect(() => {
-    setFeatureIdx(0);
-    setFeatureName(curAnchor?.feature[0]);
-  }, [curAnchor?.feature]);
 
   const onButtonClick = useCallback(
     (index) => {
@@ -68,14 +63,38 @@ function LocalPage() {
     [curAnchor?.feature]
   );
 
-  const drawRadialChart = () => {
-    drawRadialStackedBarChart(RadialArea);
-  };
+  useEffect(() => {
+    if (tab !== 4 || !infData) return;
+    const config = {
+      width: 400,
+      height: 400,
+      innerRadius: 0,
+      outerRadius: 150,
+    };
+    var tmp = [].concat(infData.harmful, infData.helpful);
+    const data = tmp?.filter(
+      (item) => item.value >= sliderVal[0] && item.value <= sliderVal[1]
+    );
+    console.log(data);
+    radialBarChart(RadialArea.current, config, data);
+  }, [infData, sliderVal, tab]);
 
   const onTabChange = (key) => {
     setTab(key);
-    if (key === 4) drawRadialChart();
-    console.log(key);
+    switch (key) {
+      case 3:
+        api("getDiceData", currentId).then((res) => {
+          setCfsList(res.cfs_list);
+        });
+        break;
+      case 4:
+        api("getInfluenceData", currentId).then((res) => {
+          setInfData(res);
+        });
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -142,7 +161,25 @@ function LocalPage() {
           />
         )}
         {tab === 3 && <SampleDesc isDice={true} descData={cfsList} />}
-        {tab === 4 && <svg ref={RadialArea} className="RadialArea" />}
+        {tab === 4 && (
+          <div>
+            <Slider
+              style={{ width: 100 }}
+              range
+              onChange={setSliderVal}
+              value={sliderVal}
+              // defaultValue={[-0.1, 0.1]}
+              max={infData?.max}
+              min={infData?.min}
+              step={(infData?.max - infData?.min) / 100}
+            />
+            <svg
+              ref={RadialArea}
+              className="RadialArea"
+              style={{ position: "relative" }}
+            />
+          </div>
+        )}
       </div>
       {/* 影响示例抽屉 */}
       {inDrawerVisible && (

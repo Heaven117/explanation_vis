@@ -17,7 +17,7 @@ const SampleDesc = ({ descData, featureName, isDice = false }) => {
   } = useReducerContext();
   const [current, setCurrent] = useState(1);
   const [data, setData] = useState();
-  console.log(data);
+  // console.log(data);
 
   useEffect(() => {
     setData(descData?.[0]);

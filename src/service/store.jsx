@@ -6,6 +6,7 @@ const store = {
   curSample: undefined,
   curAnchor: undefined,
   compareItem: undefined,
+  featureName: undefined,
 };
 
 const reducer = (preState, action) => {
@@ -39,6 +40,11 @@ const reducer = (preState, action) => {
       return {
         ...preState,
         compareItem: payload,
+      };
+    case "setFeatureName":
+      return {
+        ...preState,
+        featureName: payload,
       };
   }
 };

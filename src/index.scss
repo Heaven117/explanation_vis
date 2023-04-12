@@ -32,16 +32,20 @@
   .localPage {
     position: relative;
     width: 100%;
-
-    .top {
+    .sample {
       display: flex;
-      align-items: center;
-      .topBtn {
-        display: flex;
-        margin-left: auto;
-        column-gap: 8px;
+
+      .top {
+        margin-right: 10px;
+
+        .topBtn {
+          display: flex;
+          margin-left: auto;
+          column-gap: 8px;
+        }
       }
     }
+
     .action {
       margin: 24px 0;
       .buttonGroup {
@@ -59,7 +63,6 @@
         }
       }
     }
-
   }
 
   .editPage {
@@ -96,4 +99,20 @@
 }
 .hightLightCol {
   background-color: #e6f4ff !important;
+}
+
+
+.info-card{
+  font-size: 14px;
+  font-weight: 500;
+
+  .top-info {
+    display: flex;
+    margin-bottom: 10px;
+
+    .label {
+      width: 100px;
+      color: rgba(0, 0, 0, 0.45);
+    }
+  }
 }

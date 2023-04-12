@@ -8,7 +8,7 @@ import React, {
 import { useReducerContext } from "@/service/store";
 import _ from "lodash";
 
-import { Button, Descriptions, Pagination } from "antd";
+import { Empty, Descriptions, Pagination } from "antd";
 import { adult_process_names as columnsName } from "@/constants";
 import { predictionTag, categoryTag } from "../components/tags";
 
@@ -56,7 +56,7 @@ const SampleDesc = (props) => {
         size="small"
         style={{ width: 350 }}
         labelStyle={{ width: 150 }}
-        title={Title}
+        // title={Title}
         // extra={ <Button type="primary">Edit</Button>}
       >
         {columnsName.map((column, index) => (
@@ -82,7 +82,7 @@ const SampleDesc = (props) => {
       />
     </div>
   ) : (
-    "!!! No anchors found !!!"
+    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
   );
 };
 export default SampleDesc;

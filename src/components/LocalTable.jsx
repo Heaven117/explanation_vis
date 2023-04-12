@@ -30,20 +30,7 @@ const LocalTable = (props) => {
       className: featureName?.includes(item) ? "hightLightCol" : "",
       onCell: sharedOnCell,
     }));
-    columns.unshift(
-      ...[
-        {
-          title: "id",
-          dataIndex: "id",
-          key: "id",
-          fixed: "left",
-          width: 120,
-          onCell: (dataType, index) => ({
-            colSpan: dataType?.description ? 9 : 1,
-          }),
-        },
-      ]
-    );
+
     columns.push(
       ...[
         {

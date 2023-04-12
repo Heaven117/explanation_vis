@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 export const draw_percent_bar = (node, result) => {
-  var bar_width = 250,
+  var bar_width = 200,
     bar_height = 20;
 
   var x_buffer = 10,

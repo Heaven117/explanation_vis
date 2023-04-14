@@ -5,43 +5,58 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Table, Collapse, Slider } from "antd";
+import { Table, Button, Slider } from "antd";
 import { useReducerContext } from "../service/store";
-import { predictionTag } from "../components/tags";
 import { api } from "../service/request";
-import SampleDesc from "../components/SampleDesc";
 import { adult_process_names as columnsName } from "../constants";
+
+window.ResizeObserver = undefined;
 
 function CfsExp(props) {
   const {
     state: { currentId },
     dispatch,
   } = useReducerContext();
-  const [cfsList, setCfsList] = useState([]);
+  const [cfsList, setCfsList] = useState();
 
   const getColumns = useMemo(() => {
     const columns = columnsName.map((item) => ({
       title: item,
       dataIndex: item,
       key: item,
+      with: 200,
+      render: (cur, record, index) => {
+        return index !== 0 && cur === cfsList?.[0]?.[item] ? "-" : cur;
+      },
     }));
+    columns.push(
+      ...[
+        {
+          title: "action",
+          key: "action",
+          fixed: "right",
+          render: (cur, record, index) => <a>verify</a>,
+        },
+      ]
+    );
     return columns;
-  }, []);
+  }, [cfsList]);
 
   useEffect(() => {
     api("getDiceData", currentId).then((res) => {
-      setCfsList(res.cfs_list);
+      // setCfsList(res.cfs_list);
+      setCfsList(res);
     });
-  }, []);
+  }, [currentId]);
 
   return (
     <div style={{ marginTop: 50 }}>
       <h2>Counterfactual Explanations</h2>
       <div>
-        <SampleDesc isDice={true} descData={cfsList} />
+        {/* <SampleDesc isDice={true} descData={cfsList} /> */}
         <Table
           className="sampleTable"
-          scroll={{ x: 1800, y: 500 }}
+          scroll={{ x: 1800 }}
           columns={getColumns}
           rowKey="id"
           dataSource={cfsList}

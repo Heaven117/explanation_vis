@@ -7,6 +7,7 @@ const store = {
   curAnchor: undefined,
   compareItem: undefined,
   featureName: undefined,
+  modelInfo: undefined,
 };
 
 const reducer = (preState, action) => {
@@ -45,6 +46,11 @@ const reducer = (preState, action) => {
       return {
         ...preState,
         featureName: payload,
+      };
+    case "setModelInfo":
+      return {
+        ...preState,
+        modelInfo: payload,
       };
   }
 };

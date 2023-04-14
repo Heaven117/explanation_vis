@@ -25,7 +25,17 @@ export const api = (url, params = {}, method = "GET") => {
         });
     }
     case "POST": {
-      return instance.post(url, JSON.stringify(params));
+      return instance
+        .post(url, JSON.stringify(params))
+        .then((res) => {
+          if (res.data) {
+            console.log(url, res.data);
+            return res.data;
+          } else throw Error(res);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
     default:
       return null;

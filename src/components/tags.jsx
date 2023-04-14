@@ -1,21 +1,28 @@
 import { Tag } from "antd";
 import { adult_target_value as targetName } from "@/constants";
 import _ from "lodash";
+
+export const CAT_COLOR = {
+  TP: "#87d068",
+  TN: "success",
+  FP: "#f50",
+  FN: "error",
+};
 export const categoryTag = (category) => {
   if (!category) return null;
   let color = "grey";
   switch (category) {
     case "TP":
-      color = "#87d068";
+      color = CAT_COLOR.TP;
       break;
     case "TN":
-      color = "success";
+      color = CAT_COLOR.TN;
       break;
     case "FP":
-      color = "#f50";
+      color = CAT_COLOR.FP;
       break;
     case "FN":
-      color = "error";
+      color = CAT_COLOR.FN;
       break;
     default:
       color = "grey";

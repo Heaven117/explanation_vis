@@ -1,55 +1,77 @@
 import { useState } from "react";
-import { Button, InputNumber, Slider } from "antd";
-import { adult_process_names as columnsName } from "@/constants";
+import { Button, Form, Select, Input } from "antd";
+import { adult_process_names as columnsName } from "../constants";
 import _ from "lodash";
 import { api } from "@/service/request";
+import { useEffect } from "react";
+import { predictionTag } from "../components/tags";
+import { useMemo } from "react";
+import { useReducerContext } from "../service/store";
 
-function EditPage() {
-  const [inputValue, setInputValue] = useState(
-    new Array(columnsName.length).fill(0)
-  );
+function EditPage({ initVal }) {
+  const {
+    state: { modelInfo },
+    dispatch,
+  } = useReducerContext();
+  const optionList = modelInfo.categorical_names;
+  const [result, setResult] = useState();
 
-  const onChange = (newValue, index) => {
-    const nValue = _.cloneDeep(inputValue);
-    nValue[index] = newValue;
-    setInputValue(nValue);
+  const onFinish = (values) => {
+    console.log(values);
+    api("runModel", values, "POST").then((res) => {
+      setResult(res);
+    });
   };
+  const initialValues = useMemo(() => {
+    const tmp = {};
+    columnsName.forEach((column) => {
+      tmp[column] = 0;
+    });
+    return tmp;
+  });
 
-  const onClick = () => {
-    console.log(inputValue);
-    api("runModel", inputValue, "POST");
-  };
 
   return (
     <>
       <div className="editPage">
-        <Button type="primary" onClick={onClick}>
-          run model
-        </Button>
-        {columnsName.map((item, index) => (
-          <div className="row">
-            <div className="title">{item}</div>
-            <div className="slider">
-              <Slider
-                min={1}
-                max={20}
-                onChange={(n) => onChange(n, index)}
-                value={
-                  typeof inputValue[index] === "number" ? inputValue[index] : 0
-                }
-              />
-            </div>
-            <div>
-              <InputNumber
-                min={1}
-                max={20}
-                style={{ margin: "0 16px" }}
-                value={inputValue[index]}
-                onChange={(n) => onChange(n, index)}
-              />
-            </div>
+        <Form
+          className="editPageForm"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 600 }}
+          initialValues={initialValues}
+          onFinish={onFinish}
+          autoComplete="off"
+        >
+          <div>
+            {columnsName.map((column, index) => (
+              <Form.Item
+                label={column}
+                name={column}
+                rules={[{ required: true }]}
+              >
+                {optionList && Object.keys(optionList).includes(column) ? (
+                  <Select
+                    style={{ width: 200 }}
+                    // onChange={handleChange}
+                    options={optionList?.[column]?.map((item, index) => ({
+                      value: index,
+                      label: item,
+                    }))}
+                  />
+                ) : (
+                  <Input style={{ width: 200 }} />
+                )}
+              </Form.Item>
+            ))}
           </div>
-        ))}
+          <div style={{ marginLeft: 50 }}>
+            <Button type="primary" htmlType="submit">
+              run model
+            </Button>
+            <div>{predictionTag(result?.prediction)}</div>
+          </div>
+        </Form>
       </div>
     </>
   );

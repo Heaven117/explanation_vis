@@ -51,25 +51,6 @@ function LocalPage() {
           <div>
             <svg ref={percentBar} className="percentBar" />
           </div>
-          {/* <div className="top-info">
-            <div className="label">ID: </div>
-            {curSample?.id}
-          </div>
-          <div className="top-info">
-            <div className="label">Category: </div>
-            {categoryTag(curSample?.category)}
-          </div>
-          <div className="top-info">
-            <div className="label">Label: </div>
-            {predictionTag(curSample?.income)}
-          </div>
-          <div className="top-info">
-            <div className="label">Prediction: </div>
-            {predictionTag(curSample?.prediction)}
-          </div>
-          <div className="top-info">
-            <svg ref={percentBar} className="percentBar" />
-          </div> */}
         </div>
         <SampleDesc featureName={featureName} descData={sampleData} />
       </div>

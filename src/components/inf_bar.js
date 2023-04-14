@@ -7,10 +7,11 @@ export const draw_percent_bar = (node, result) => {
   var x_buffer = 10,
     y_buffer = 7;
 
-  var xScale = d3.scaleLinear().domain([0, 1]).rangeRound([0, bar_width]);
+  const id = "inf_percentBar_lin_gradient";
+  var xScale = d3.scaleLinear().domain([-1, 1]).rangeRound([0, bar_width]);
 
-  var good_col = "#2ca25f",
-    bad_col = "#cd201f";
+  const good_col = "#ff8c00",
+    bad_col = "#98abc5";
 
   // !先清除
   d3.select(node).html("");
@@ -26,7 +27,7 @@ export const draw_percent_bar = (node, result) => {
   // Setting the color gradient
   var linearGradient = defs
     .append("linearGradient")
-    .attr("id", "lin_gradient")
+    .attr("id", id)
     .attr("x1", "15%")
     .attr("x2", "85%")
     .attr("y1", "0%")
@@ -55,8 +56,8 @@ export const draw_percent_bar = (node, result) => {
     .attr("rx", 10)
     .attr("ry", 10)
     .style("stroke", "black")
-    .style("stroke-width", 1.3)
-    .style("fill", "url(#lin_gradient)");
+    .style("stroke-width", 1)
+    .style("fill", `url(#${id})`);
 
   svg
     .append("g")
@@ -71,7 +72,7 @@ export const draw_percent_bar = (node, result) => {
     })
     .attr("y2", bar_height + 5)
     .attr("stroke", function (d) {
-      if (result > 0.5) {
+      if (result > 0) {
         return good_col;
       } else {
         return bad_col;
@@ -95,7 +96,7 @@ export const draw_percent_bar = (node, result) => {
     .attr("font-size", "16px")
     .attr("font-weight", "bold")
     .attr("fill", function (d) {
-      if (result > 0.5) {
+      if (result > 0) {
         return good_col;
       } else {
         return bad_col;

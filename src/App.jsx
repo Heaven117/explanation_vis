@@ -19,6 +19,12 @@ function App() {
   } = useReducerContext();
   const [activeMenu, setActiveMenu] = useState(MENU.local);
 
+  useEffect(() => {
+    api("getModelInfo").then((res) => {
+      dispatch({ type: "setModelInfo", payload: res });
+    });
+  }, []);
+
   return (
     <Layout hasSider className="App">
       <Sider

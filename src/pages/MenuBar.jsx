@@ -4,21 +4,21 @@ import {
   BarChartOutlined,
   EditOutlined,
 } from "@ant-design/icons";
-import { Button, Menu, Input } from "antd";
-import { useReducerContext } from "@/service/store";
-import { MENU } from "@/constants";
-import { api } from "@/service/request";
+import { Button, Menu, Input, Tag } from "antd";
+import { useReducerContext } from "../service/store";
+import { MENU } from "../constants";
+import { api } from "../service/request";
 import { List } from "antd";
 import VirtualList from "rc-virtual-list";
 import { isEmpty } from "lodash";
-import { categoryTag } from "@/components/tags";
+import { categoryTag, CAT_COLOR } from "../components/tags";
 const { Search } = Input;
 
 const ContainerHeight = 800;
 
 const MenuBar = ({ activeMenu, setActiveMenu }) => {
   const {
-    state: { currentId },
+    state: { currentId, modelInfo },
     dispatch,
   } = useReducerContext();
   const [data, setData] = useState([]);
@@ -121,9 +121,28 @@ const MenuBar = ({ activeMenu, setActiveMenu }) => {
           </List>
         </div>
       ) : (
-        <div>
-          <div>Model Summary</div>
-          <div>Accuracy: 83.5%</div>
+        <div className="modelInfo">
+          <h3>Model Summary</h3>
+          <div>Accuracy: {Number(modelInfo?.acc * 100).toFixed(1)} %</div>
+          <div>Loss: {Number(modelInfo?.loss).toFixed(2)}</div>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div>
+              <Tag className="modelInfo_icon" color={CAT_COLOR.TP}>
+                {modelInfo.TP}
+              </Tag>
+              <Tag className="modelInfo_icon" color={CAT_COLOR.TN}>
+                {modelInfo.TN}
+              </Tag>
+            </div>
+            <div>
+              <Tag className="modelInfo_icon" color={CAT_COLOR.FP}>
+                {modelInfo.FP}
+              </Tag>
+              <Tag className="modelInfo_icon" color={CAT_COLOR.FN}>
+                {modelInfo.FN}
+              </Tag>
+            </div>
+          </div>
         </div>
       )}
     </div>

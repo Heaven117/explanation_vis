@@ -12,12 +12,7 @@ import { api } from "../service/request";
 import SampleDesc from "../components/SampleDesc";
 import { radialBarChart } from "../components/radialBarChart";
 import InfoCard from "../components/InfoCard";
-import { draw_percent_bar } from "../components/percentage_bar";
-
-const config = {
-  good_col: "#98abc5",
-  bad_col: "#ff8c00",
-};
+import { draw_percent_bar } from "../components/inf_bar";
 
 function InfExp(props) {
   const {
@@ -38,6 +33,7 @@ function InfExp(props) {
       api("getInstance", id).then((res) => {
         const { sample } = res;
         setInfSelect({ data: [sample], value: value });
+        draw_percent_bar(percentBar.current, value);
       });
     },
     [dispatch]
@@ -55,7 +51,7 @@ function InfExp(props) {
     const data = tmp?.filter(
       (item) => item.value >= sliderVal[0] && item.value <= sliderVal[1]
     );
-    console.log(data);
+    // console.log(data);
     radialBarChart(RadialArea.current, config, data, onRadialCallback);
   }, [infData, onRadialCallback, sliderVal]);
 
@@ -63,7 +59,7 @@ function InfExp(props) {
     api("getInfluenceData", currentId).then((res) => {
       setInfData(res);
     });
-  }, []);
+  }, [currentId]);
 
   return (
     <div style={{ marginTop: 50 }}>
@@ -85,8 +81,13 @@ function InfExp(props) {
             style={{ position: "relative" }}
           />
         </div>
-        <SampleDesc descData={infSelect?.data} infValue={infSelect?.value} />
-        {infSelect && <InfoCard data={infSelect.data[0]} />}
+        <SampleDesc descData={infSelect?.data} />
+        <div>
+          {infSelect && <InfoCard data={infSelect.data[0]} />}
+          <div>
+            <svg ref={percentBar} className="percentBar" />
+          </div>
+        </div>
       </div>
     </div>
   );

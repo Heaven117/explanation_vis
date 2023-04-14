@@ -1,118 +1,102 @@
 .App {
   background-color: #fff;
-
-  .menuBar {
-    max-width: 250px;
-
-    .ant-list-item {
-      border: none;
-      justify-content: center;
-      padding: 6px 0;
-    }
-
-    .sampleList {
-      border-inline-end: 1px solid rgba(5, 5, 5, 0.06);
-    }
-
-    .sampleBtn {
-      display: flex;
-      width: 100%;
-      align-items: center;
-      justify-content: space-around;
-      padding: 0 50px;
-    }
-  }
-
-  .InfluencePart {
-    overflow: scroll;
-    height: 100%;
-    width: 400px;
-  }
-
-  .localPage {
-    position: relative;
-    width: 100%;
-    .sample {
-      display: flex;
-
-      .top {
-        margin-right: 10px;
-
-        .topBtn {
-          display: flex;
-          margin-left: auto;
-          column-gap: 8px;
-        }
-      }
-    }
-
-    .action {
-      margin: 24px 0;
-      .buttonGroup {
-        margin: 0 20px;
-        .btn {
-          border-radius: 0;
-        }
-        :first-child {
-          border-start-start-radius: 6px;
-          border-end-start-radius: 6px;
-        }
-        :last-child {
-          border-start-end-radius: 6px;
-          border-end-end-radius: 6px;
-        }
-      }
-    }
-  }
-
-  .editPage {
-    .row {
-      display: flex;
-      column-gap: 10px;
-      align-items: center;
-      justify-content: space-between;
-
-      .title {
-        width: 200px;
-        font-size: 12px;
-      }
-      .slider {
-        width: 500px;
-      }
-    }
-  }
 }
 
-.drawerItem {
-  margin: 10px 0;
-  width: 80%;
-  height: 30px;
-  border-radius: 30px;
-  display: flex;
-  text-align: center;
-  justify-content: space-around;
-  align-items: center;
-  font-size: 12px;
-  color: white;
-  background-color: black;
-  cursor: pointer;
-}
-.hightLightCol {
-  background-color: #e6f4ff !important;
-}
+.menuBar {
+  max-width: 250px;
 
-
-.info-card{
-  font-size: 14px;
-  font-weight: 500;
-
-  .top-info {
+  .modelInfo {
     display: flex;
-    margin-bottom: 10px;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 8px;
+    align-items: center;
+    margin-top: 50px;
+    font-size: 14px;
 
-    .label {
-      width: 100px;
-      color: rgba(0, 0, 0, 0.45);
+    &_icon {
+      text-align: center;
+      line-height: 30px;
+      width: 60px;
+      height: 30px;
+      margin: 0;
+    }
+  }
+
+  .ant-list-item {
+    border: none;
+    justify-content: center;
+    padding: 6px 0;
+  }
+
+  .sampleList {
+    border-inline-end: 1px solid rgba(5, 5, 5, 0.06);
+  }
+
+  .sampleBtn {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 50px;
+  }
+}
+
+.editPage {
+  &Form {
+    display: flex;
+  }
+}
+
+.localPage {
+  position: relative;
+  width: 100%;
+  .sample {
+    display: flex;
+
+    .top {
+      margin-right: 10px;
+
+      .topBtn {
+        display: flex;
+        margin-left: auto;
+        column-gap: 8px;
+      }
+    }
+  }
+
+  .action {
+    margin: 24px 0;
+    .buttonGroup {
+      margin: 0 20px;
+      .btn {
+        border-radius: 0;
+      }
+      :first-child {
+        border-start-start-radius: 6px;
+        border-end-start-radius: 6px;
+      }
+      :last-child {
+        border-start-end-radius: 6px;
+        border-end-end-radius: 6px;
+      }
+    }
+  }
+  .hightLightCol {
+    background-color: #e6f4ff !important;
+  }
+  .info-card {
+    font-size: 14px;
+    font-weight: 500;
+
+    .top-info {
+      display: flex;
+      margin-bottom: 10px;
+
+      .label {
+        width: 100px;
+        color: rgba(0, 0, 0, 0.45);
+      }
     }
   }
 }

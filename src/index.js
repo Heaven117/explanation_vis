@@ -1,9 +1,16 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './App.jsx';
+import React from "react";
+import { createRoot } from "react-dom/client";
+
+import App from "./App.jsx";
 import { ReducerContextProvider } from "./service/store";
 
-function Index(){
-    return <ReducerContextProvider><App/></ReducerContextProvider>
+function Index() {
+  return (
+    <ReducerContextProvider>
+      <App />
+    </ReducerContextProvider>
+  );
 }
-ReactDOM.render(<Index />, document.getElementById('root'))
+
+const root = createRoot(document.getElementById("root"));
+root.render(<Index />);

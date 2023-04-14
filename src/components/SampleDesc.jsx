@@ -13,7 +13,7 @@ import { adult_process_names as columnsName } from "@/constants";
 import { predictionTag, categoryTag } from "../components/tags";
 
 const SampleDesc = (props) => {
-  const { descData, featureName = null, isDice = false, infValue } = props;
+  const { descData, featureName = null, isDice = false } = props;
   const {
     state: { curSample },
   } = useReducerContext();
@@ -31,23 +31,6 @@ const SampleDesc = (props) => {
     setData(descData?.[page - 1]);
   };
 
-  const Title = useMemo(() => {
-    return isDice ? (
-      <>反转示例</>
-    ) : (
-      <div>
-        <span style={{ marginRight: 10 }}>ID: {data?.id}</span>
-        <span>{categoryTag(data?.category)}</span>
-        <span>
-          {predictionTag(
-            _.isNil(data?.prediction) ? data?.income : data?.prediction
-          )}
-        </span>
-        <span>{infValue}</span>
-      </div>
-    );
-  }, [data, isDice]);
-
   return descData ? (
     <div>
       <Descriptions
@@ -56,8 +39,6 @@ const SampleDesc = (props) => {
         size="small"
         style={{ width: 350 }}
         labelStyle={{ width: 150 }}
-        // title={Title}
-        // extra={ <Button type="primary">Edit</Button>}
       >
         {columnsName.map((column, index) => (
           <Descriptions.Item

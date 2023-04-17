@@ -9,6 +9,7 @@ import { Table, Button, Slider } from "antd";
 import { useReducerContext } from "../service/store";
 import { api } from "../service/request";
 import { adult_process_names as columnsName } from "../constants";
+import { predictionTag, categoryTag } from "../components/tags";
 
 window.ResizeObserver = undefined;
 
@@ -32,10 +33,13 @@ function CfsExp(props) {
     columns.push(
       ...[
         {
-          title: "action",
-          key: "action",
+          title: "prediction",
+          dataIndex: "prediction",
+          key: "prediction",
           fixed: "right",
-          render: (cur, record, index) => <a>verify</a>,
+          render: (cur, record, index) => {
+            return predictionTag(cur);
+          },
         },
       ]
     );
@@ -56,7 +60,7 @@ function CfsExp(props) {
         {/* <SampleDesc isDice={true} descData={cfsList} /> */}
         <Table
           className="sampleTable"
-          scroll={{ x: 1800 }}
+          scroll={{ x: 1600 }}
           columns={getColumns}
           rowKey="id"
           dataSource={cfsList}

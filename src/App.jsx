@@ -9,6 +9,7 @@ import _ from "lodash";
 import { MENU } from "./constants";
 import LocalPage from "./pages/LocalPage";
 import EditPage from "./pages/EditPage";
+import GlobalPage from "./pages/GlobalPage";
 
 const { Content, Footer, Sider } = Layout;
 
@@ -45,6 +46,7 @@ function App() {
         style={{ marginLeft: 200, background: "white" }}
       >
         <Content style={{ margin: "24px 50px", overflow: "initial" }}>
+          {activeMenu === MENU.global && <GlobalPage />}
           {activeMenu === MENU.local && !_.isNil(currentId) && <LocalPage />}
           {activeMenu === MENU.edit && <EditPage />}
         </Content>

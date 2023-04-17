@@ -13,7 +13,7 @@ function EditPage({ initVal }) {
     state: { modelInfo },
     dispatch,
   } = useReducerContext();
-  const optionList = modelInfo.categorical_names;
+  const optionList = modelInfo?.categorical_names;
   const [result, setResult] = useState();
 
   const onFinish = (values) => {
@@ -30,25 +30,34 @@ function EditPage({ initVal }) {
     return tmp;
   });
 
-
   return (
     <>
       <div className="editPage">
         <Form
           className="editPageForm"
-          labelCol={{ span: 8 }}
+          labelCol={{ span: 10 }}
           wrapperCol={{ span: 16 }}
           style={{ maxWidth: 600 }}
           initialValues={initialValues}
           onFinish={onFinish}
           autoComplete="off"
         >
+          <div style={{ marginRight: 50 }}>
+            <h2>Verify Model</h2>
+            <Button type="primary" htmlType="submit">
+              run model
+            </Button>
+            <div style={{ marginTop: 20 }}>
+              {predictionTag(result?.prediction)}
+            </div>
+          </div>
           <div>
             {columnsName.map((column, index) => (
               <Form.Item
                 label={column}
                 name={column}
                 rules={[{ required: true }]}
+                style={{ marginBottom: 10 }}
               >
                 {optionList && Object.keys(optionList).includes(column) ? (
                   <Select
@@ -64,12 +73,6 @@ function EditPage({ initVal }) {
                 )}
               </Form.Item>
             ))}
-          </div>
-          <div style={{ marginLeft: 50 }}>
-            <Button type="primary" htmlType="submit">
-              run model
-            </Button>
-            <div>{predictionTag(result?.prediction)}</div>
           </div>
         </Form>
       </div>

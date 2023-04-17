@@ -30,7 +30,7 @@ const MenuBar = ({ activeMenu, setActiveMenu }) => {
       label: "Global Explanation",
       icon: <PieChartOutlined />,
     },
-    { key: MENU.edit, label: "Edit Explanation", icon: <EditOutlined /> },
+    // { key: MENU.edit, label: "Edit Explanation", icon: <EditOutlined /> },
     {
       key: MENU.local,
       label: "Local Explanation",
@@ -112,7 +112,7 @@ const MenuBar = ({ activeMenu, setActiveMenu }) => {
                     }
                     onClick={() => onClick(index)}
                   >
-                    {index}
+                    {sample.id}
                     {categoryTag(sample.category)}
                   </Button>
                 </List.Item>

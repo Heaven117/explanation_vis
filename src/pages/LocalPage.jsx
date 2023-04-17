@@ -19,6 +19,7 @@ import AnchorExp from "./AnchorExp";
 import InfExp from "./InfExp";
 import CfsExp from "./CfsExp";
 import InfoCard from "../components/InfoCard";
+import EditPage from "./EditPage";
 
 function LocalPage() {
   const {
@@ -53,6 +54,7 @@ function LocalPage() {
           </div>
         </div>
         <SampleDesc featureName={featureName} descData={sampleData} />
+        <EditPage />
       </div>
 
       <AnchorExp featureName={featureName} setFeatureName={setFeatureName} />

@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Button, Collapse, Slider } from "antd";
+import { Button, Progress, Slider } from "antd";
 import { useReducerContext } from "../service/store";
 import { predictionTag } from "../components/tags";
 import { api } from "../service/request";
@@ -66,15 +66,32 @@ function InfExp(props) {
       <h2>Case-based Explanations</h2>
       <div style={{ display: "flex", columnGap: 50 }}>
         <div>
-          <Slider
-            style={{ width: 100 }}
-            range
-            onChange={setSliderVal}
-            value={sliderVal}
-            max={infData?.max}
-            min={infData?.min}
-            step={(infData?.max - infData?.min) / 100}
-          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Slider
+              style={{ width: 100 }}
+              range
+              onChange={setSliderVal}
+              value={sliderVal}
+              max={infData?.max}
+              min={infData?.min}
+              step={(infData?.max - infData?.min) / 100}
+            />
+            <Progress
+              style={{ width: 100 }}
+              showInfo={false}
+              percent={infData?.harmPer * 100}
+              size="small"
+              trailColor="#ff8c00"
+              strokeColor="#98abc5"
+            />
+          </div>
+
           <svg
             ref={RadialArea}
             className="RadialArea"

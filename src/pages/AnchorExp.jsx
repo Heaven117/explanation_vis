@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { Button, Collapse, Slider } from "antd";
 import { useReducerContext } from "../service/store";
+import { adult_target_value as targetName } from "@/constants";
 import { predictionTag } from "../components/tags";
 import { api } from "../service/request";
 import SampleDesc from "../components/SampleDesc";
@@ -77,7 +78,9 @@ function AnchorExp(props) {
       <div style={{ display: "flex", columnGap: 50 }}>
         <Collapse ghost>
           <Collapse.Panel
-            header="Examples of consistent predictions"
+            header={`Examples where the A.I. agent predicts '${
+              targetName[curSample?.prediction]
+            }'`}
             style={{
               width: 500,
               backgroundColor: "rgba(0, 0, 0, 0.02)",
@@ -93,7 +96,9 @@ function AnchorExp(props) {
         </Collapse>
         <Collapse ghost>
           <Collapse.Panel
-            header="Examples of inconsistent predictions"
+            header={`Examples where the A.I. agent DOES NOT predicts '${
+              targetName[curSample?.prediction]
+            }'`}
             style={{
               width: 500,
               backgroundColor: "rgba(0, 0, 0, 0.02)",

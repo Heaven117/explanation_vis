@@ -8,13 +8,8 @@ import React, {
 import _ from "lodash";
 import SampleDesc from "../components/SampleDesc";
 import { useReducerContext } from "@/service/store";
-import { Descriptions, Tabs, Slider } from "antd";
-import { adult_target_value as targetName, TabItems } from "../constants";
-
-import { predictionTag, categoryTag } from "../components/tags";
 import { draw_percent_bar } from "../components/percentage_bar";
 import { api } from "../service/request";
-import * as d3 from "d3";
 import AnchorExp from "./AnchorExp";
 import InfExp from "./InfExp";
 import CfsExp from "./CfsExp";

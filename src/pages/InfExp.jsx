@@ -13,6 +13,7 @@ import SampleDesc from "../components/SampleDesc";
 import { radialBarChart } from "../components/radialBarChart";
 import InfoCard from "../components/InfoCard";
 import { draw_percent_bar } from "../components/inf_bar";
+import ParallelCharts from "../components/parallelCharts";
 
 function InfExp(props) {
   const {
@@ -106,6 +107,8 @@ function InfExp(props) {
           </div>
         </div>
       </div>
+      <h4>Top 10 influence instances</h4>
+      <ParallelCharts onCallback={onRadialCallback} />
     </div>
   );
 }

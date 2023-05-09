@@ -1,6 +1,7 @@
 import React, { createContext, useReducer, useContext } from "react";
 
 const store = {
+  isAb: true,
   rawData: undefined,
   currentId: 0,
   curSample: undefined,
@@ -51,6 +52,11 @@ const reducer = (preState, action) => {
       return {
         ...preState,
         modelInfo: payload,
+      };
+    case "setIsAb":
+      return {
+        ...preState,
+        isAb: payload,
       };
   }
 };

@@ -102,6 +102,7 @@ function InfExp(props) {
         <SampleDesc descData={infSelect?.data} />
         <div>
           {infSelect && <InfoCard data={infSelect.data[0]} />}
+          <div className="label">Influence Value: </div>
           <div>
             <svg ref={percentBar} className="percentBar" />
           </div>
